@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>商品详情页工作台 · 羊绒大衣（演示复刻）</title>
+<style>
+  /* ============ 基础 ============ */
+  :root{
+    --ink:#1f2323; --ink2:#6b7280; --line:#e5e7eb; --line2:#ececec;
+    --blue:#2f6bff; --bg:#f7f7f5;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html,body{height:100%}
+  body{font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+       color:var(--ink); background:#fff; overflow:hidden; user-select:none;
+       -webkit-font-smoothing:antialiased}
+  .app{position:fixed; inset:0; display:flex; flex-direction:column; background:#fff}
+
+  /* ============ 顶条：返回生意百宝箱 ============ */
+  .top{flex:0 0 26px; display:flex; align-items:center; padding:0 10px;
+       border-bottom:1px solid var(--line2); font-size:11px; color:var(--ink); background:#fff; z-index:30}
+  .top .back{display:flex; align-items:center; gap:5px; cursor:pointer}
+  .top .back:hover{opacity:.7}
+  .top svg{width:11px; height:11px}
+
+  /* ============ 画布区 ============ */
+  .stage{flex:1 1 auto; position:relative; overflow:hidden; background:#fbfbfa; cursor:default}
+  .stage.panning{cursor:grabbing}
+  .dots{position:absolute; inset:0;
+        background-image:radial-gradient(circle, #dcdcd7 1px, transparent 1px);
+        background-size:15px 15px; background-position:4px 4px}
+  .world{position:absolute; left:0; top:0; transform-origin:0 0; will-change:transform}
+  #wires{position:absolute; overflow:visible; pointer-events:none}
+
+  /* ---- 节点卡片（尺寸随真实图比例变化）---- */
+  .node{position:absolute; cursor:grab}
+  .node:active{cursor:grabbing}
+  .node .tag{display:flex; align-items:center; gap:4px; font-size:10px; color:#3f4756;
+             height:15px; margin-bottom:3px; white-space:nowrap; overflow:hidden}
+  .node .tag svg{width:10px; height:10px; flex:0 0 auto}
+  .node .tag .dm{margin-left:auto; padding-left:6px; font-size:8px; color:#b6bac3; flex:0 0 auto; letter-spacing:.2px}
+  .node .card{position:relative; border-radius:8px; overflow:hidden;
+              background:#fff;
+              box-shadow:0 2px 10px rgba(31,34,51,.10); transition:box-shadow .12s, border-color .12s}
+  .node img{display:block; width:100%; height:100%; object-fit:cover; pointer-events:none}
+  .node.sel .card{box-shadow:0 0 0 2px rgba(47,107,255,.45), 0 4px 14px rgba(31,34,51,.10)}
+  .node .st{position:absolute; right:4px; top:4px; font-size:8px; line-height:1; padding:2.5px 5px;
+            border-radius:999px; background:rgba(31,34,51,.80); color:#fff; letter-spacing:.3px}
+  .node.grp .card{box-shadow:0 0 0 1.5px rgba(47,107,255,.55), 0 2px 10px rgba(31,34,51,.10)}
+  /* 空占位节点 */
+  .node.blank .card{display:flex; align-items:center; justify-content:center; background:#fff;
+                    border:1px dashed var(--line)}
+  .node.blank .ph{width:34px; height:34px; border-radius:8px; background:#f3f4f6; display:flex;
+                  align-items:center; justify-content:center; color:#9ca3af}
+
+  /* ============ 顶部工具栏（浮在画布顶部中间）============ */
+  .toolbar{position:absolute; left:50%; top:8px; transform:translateX(-50%); z-index:20;
+           display:flex; align-items:center; gap:2px; padding:3px;
+           background:#fff; border:1px solid var(--line2); border-radius:10px;
+           box-shadow:0 6px 20px rgba(31,34,51,.10);
+           max-width:calc(100% - 20px); overflow-x:auto; scrollbar-width:none}
+  .toolbar::-webkit-scrollbar{display:none}
+  .toolbar .tb{display:flex; align-items:center; gap:3px; font-size:10.5px; color:var(--ink);
+               padding:4px 6px; border-radius:7px; cursor:pointer; white-space:nowrap}
+  .toolbar .tb:hover{background:#f3f4f6}
+  .toolbar .tb svg{width:11px; height:11px}
+  .toolbar .tb.icon-only{padding:4px 5px}
+
+  /* ============ 组选中浮条 ============ */
+  .float{position:absolute; left:50%; bottom:34px; transform:translateX(-50%); z-index:20;
+         display:none; align-items:center; padding:3px;
+         background:#fff; border:1px solid var(--line2); border-radius:10px;
+         box-shadow:0 8px 24px rgba(31,34,51,.14)}
+  .float.show{display:flex}
+  .float .fb{display:flex; align-items:center; gap:5px; font-size:11px; color:var(--ink);
+             padding:6px 10px; border-radius:7px; cursor:pointer; white-space:nowrap}
+  .float .fb:hover{background:#f3f4f6}
+  .float .fb.primary{background:#f3f4f6}
+  .float .fb svg{width:12px; height:12px}
+
+  /* ============ 底部状态条 ============ */
+  .botbar{position:absolute; left:0; right:0; bottom:0; height:26px; z-index:20;
+          display:flex; align-items:center; padding:0 8px; gap:8px; pointer-events:none}
+  .botbar>*{pointer-events:auto}
+  .chipbtn{display:flex; align-items:center; gap:4px; font-size:10px; color:#4b5563;
+           background:#fff; border:1px solid var(--line2); border-radius:8px;
+           padding:3px 8px; cursor:pointer; box-shadow:0 2px 8px rgba(31,34,51,.06)}
+  .chipbtn:hover{background:#f9fafb}
+  .chipbtn svg{width:11px; height:11px}
+  .zoombar{position:absolute; left:50%; bottom:5px; transform:translateX(-50%);
+           display:flex; align-items:center; gap:2px; background:#fff;
+           border:1px solid var(--line2); border-radius:8px; padding:2px;
+           box-shadow:0 2px 8px rgba(31,34,51,.06)}
+  .zoombar .zb{width:20px; height:18px; display:flex; align-items:center; justify-content:center;
+               border-radius:5px; cursor:pointer; color:#4b5563; font-size:12px}
+  .zoombar .zb:hover{background:#f3f4f6}
+  .zoombar .pct{font-size:10px; color:#4b5563; min-width:32px; text-align:center}
+  .zoombar svg{width:11px; height:11px}
+
+  /* ============ 提示词输入条（选中节点时，1:1 真实样式）============ */
+  .promptbar{position:absolute; left:50%; bottom:34px; transform:translateX(-50%); z-index:22;
+             display:none; width:min(560px,94%);
+             background:#fff; border:1px solid var(--line2); border-radius:14px;
+             box-shadow:0 10px 30px rgba(31,34,51,.16); padding:9px 10px 8px 9px}
+  .promptbar.show{display:block}
+  .pb-top{display:flex; gap:9px; align-items:flex-start}
+  .pb-thumb{position:relative; flex:0 0 auto; width:46px; height:46px}
+  .pb-thumb img{width:100%; height:100%; object-fit:cover; border-radius:9px;
+                border:1px solid var(--line2); display:block; pointer-events:none}
+  .pb-thumb .nb{position:absolute; right:-4px; top:-4px; width:13px; height:13px; border-radius:50%;
+                background:#1f2323; color:#fff; font-size:7.5px; display:flex; align-items:center;
+                justify-content:center; border:1.5px solid #fff}
+  .pb-mid{flex:1 1 auto; min-width:0; position:relative; padding-right:20px}
+  .pb-mid textarea{width:100%; border:0; outline:0; resize:none; font-size:10.5px; line-height:1.6;
+                   color:var(--ink); background:transparent; height:34px; font-family:inherit}
+  .pb-exp{position:absolute; right:0; top:-1px; width:15px; height:15px; color:#6b7280; cursor:pointer}
+  .pb-exp svg{width:12px; height:12px}
+  .pb-ctl{display:flex; align-items:center; gap:5px; margin-top:7px}
+  .pb-pill{display:flex; align-items:center; gap:4px; font-size:9.5px; color:var(--ink);
+           border:1px solid var(--line); border-radius:8px; padding:3.5px 8px; cursor:pointer; white-space:nowrap}
+  .pb-pill:hover{background:#f9fafb}
+  .pb-pill svg{width:10px; height:10px; flex:0 0 auto}
+  .pb-pill .cv{font-size:7px; color:#6b7280; margin-left:1px}
+  .pb-ic{width:21px; height:21px; display:flex; align-items:center; justify-content:center;
+         color:#4b5563; cursor:pointer; border-radius:6px}
+  .pb-ic:hover{background:#f3f4f6}
+  .pb-ic svg{width:13px; height:13px}
+  .pb-sp{flex:1 1 auto}
+  .pb-cr{display:flex; align-items:center; gap:4px; font-size:10.5px; color:var(--ink); font-weight:500}
+  .pb-cr svg{width:11px; height:11px; color:#2f6bff}
+  .pb-send{flex:0 0 auto; width:27px; height:27px; border-radius:9px; background:#1f2323; color:#fff;
+           display:flex; align-items:center; justify-content:center; cursor:pointer; margin-left:8px}
+  .pb-send:hover{opacity:.86}
+  .pb-send svg{width:14px; height:14px}
+
+  /* ============ 右键菜单 ============ */
+  .ctxmenu{position:absolute; z-index:40; display:none; min-width:180px; padding:5px;
+           background:#fff; border:1px solid var(--line2); border-radius:12px;
+           box-shadow:0 12px 32px rgba(31,34,51,.16)}
+  .ctxmenu.show{display:block}
+  .ctxmenu .mi{display:flex; align-items:center; justify-content:space-between; gap:16px;
+               font-size:11px; color:var(--ink); padding:7px 9px; border-radius:7px; cursor:pointer}
+  .ctxmenu .mi:hover{background:#f3f4f6}
+  .ctxmenu .mi .ks{font-size:10px; color:#9ca3af}
+  .ctxmenu .mi.danger{color:#e11d48}
+  .ctxmenu .sep{height:1px; background:var(--line2); margin:4px 6px}
+
+  /* ============ 弹窗 ============ */
+  .mask{position:absolute; inset:0; z-index:50; display:none; background:rgba(17,24,39,.45)}
+  .mask.show{display:block}
+  .dlg{position:absolute; z-index:51; display:none; left:50%; top:50%; transform:translate(-50%,-50%);
+       width:300px; max-height:92%; overflow:auto; background:#fff; border-radius:14px;
+       box-shadow:0 24px 60px rgba(0,0,0,.25); padding:16px 16px 14px}
+  .dlg.show{display:block}
+  .dlg h3{font-size:13px; font-weight:600; display:flex; align-items:center; justify-content:space-between}
+  .dlg .x{cursor:pointer; color:#9ca3af; font-size:12px; padding:2px 4px}
+  .dlg .desc{font-size:10px; color:var(--ink2); line-height:1.5; margin:7px 0 10px}
+  .dlg label.fl{display:block; font-size:10px; font-weight:600; margin:10px 0 5px}
+  .dlg label.fl em{color:#e11d48; font-style:normal}
+  .dlg .ipt{width:100%; border:1px solid var(--line); border-radius:8px; padding:7px 8px;
+            font-size:11px; outline:none; color:var(--ink)}
+  .dlg .ipt:focus{border-color:#c7d4f5}
+  .dlg .cnt{font-size:9px; color:#9ca3af; margin-top:3px; text-align:right}
+  .dlg .up{width:56px; height:56px; border:1px solid var(--line); border-radius:10px;
+           display:flex; align-items:center; justify-content:center; color:#6b7280; cursor:pointer}
+  .dlg .ta{width:100%; border:1px solid var(--line); border-radius:8px; padding:7px 8px;
+           font-size:11px; color:#9ca3af; height:52px; outline:none; resize:none}
+  .opt{border:1px solid var(--line); border-radius:10px; padding:8px 9px; margin-bottom:6px;
+       display:flex; gap:7px; cursor:pointer}
+  .opt.on{border-color:var(--ink); background:#fafafa}
+  .opt .radio{flex:0 0 auto; width:12px; height:12px; border-radius:50%; border:1.5px solid #c8ccd4; margin-top:1px}
+  .opt.on .radio{border-color:var(--blue); background:radial-gradient(circle, var(--blue) 40%, #fff 46%)}
+  .opt b{display:block; font-size:10.5px; font-weight:600}
+  .opt span{display:block; font-size:9.5px; color:var(--ink2); margin-top:2px; line-height:1.4}
+  .dlg .btns{display:flex; justify-content:flex-end; gap:8px; margin-top:14px}
+  .dlg .btn{font-size:11px; padding:6px 12px; border-radius:8px; cursor:pointer}
+  .dlg .btn.ghost{color:var(--ink)}
+  .dlg .btn.dark{background:#1f2323; color:#fff}
+  .dlg .btn.dark:hover{opacity:.88}
+
+  /* 模版库 —— ⚠️ display:flex 只能挂在 .show 上，否则会覆盖 .dlg 的 display:none（2026-10-14 踩过） */
+  .tpl{width:420px; height:72%}
+  .tpl.show{display:flex; flex-direction:column}
+  .tpl .hd{display:flex; align-items:center; justify-content:space-between; padding:2px 2px 10px}
+  .tpl .hd .t{font-size:13px; font-weight:600}
+  .tpl .hd .ops{display:flex; gap:10px; color:#6b7280; font-size:12px}
+  .tpl .hd .ops .i{cursor:pointer}
+  .tpl .tabs{display:flex; gap:0; background:#f3f4f6; border-radius:9px; padding:3px; width:max-content}
+  .tpl .tab{font-size:10.5px; padding:5px 12px; border-radius:7px; cursor:pointer; color:#6b7280}
+  .tpl .tab.on{background:#fff; color:var(--ink); box-shadow:0 1px 4px rgba(0,0,0,.08)}
+  .tpl .body{flex:1; display:flex; align-items:center; justify-content:center}
+  .tpl .empty{text-align:center; color:#9ca3af}
+  .tpl .empty .ic{width:44px; height:44px; border-radius:12px; background:#f3f4f6; margin:0 auto 10px;
+                  display:flex; align-items:center; justify-content:center}
+  .tpl .empty p{font-size:11px}
+  .tpl .grid{display:none; padding:6px 2px; overflow:auto}
+  .tplcard{border:1px solid var(--line); border-radius:10px; overflow:hidden; width:150px; cursor:pointer}
+  .tplcard .cov{height:84px; background:#f3f4f6; display:flex; align-items:center; justify-content:center; gap:3px}
+  .tplcard .cov img{width:26px; height:26px; object-fit:cover; border-radius:4px; border:1px solid var(--line2)}
+  .tplcard .nm{font-size:10.5px; padding:7px 8px; display:flex; justify-content:space-between; align-items:center}
+  .tplcard .nm i{font-style:normal; font-size:9px; color:#9ca3af}
+
+  /* ============ Toast ============ */
+  .toast{position:absolute; left:50%; bottom:64px; transform:translateX(-50%) translateY(8px); z-index:60;
+         background:rgba(31,34,51,.92); color:#fff; font-size:11px; padding:8px 14px; border-radius:999px;
+         opacity:0; pointer-events:none; transition:.22s; max-width:80%; text-align:center}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+
+  /* 框选矩形 */
+  .rubber{position:absolute; z-index:15; border:1px solid rgba(47,107,255,.6);
+          background:rgba(47,107,255,.08); display:none; border-radius:2px}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- 顶条：返回 + 项目卡 -->
+  <div class="top">
+    <span class="back" data-fake="返回生意百宝箱">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+      返回生意百宝箱
+    </span>
+    <span style="margin-left:auto; display:flex; align-items:center; gap:5px; color:#4b5563">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
+      <b style="font-size:10.5px; color:var(--ink)">羊绒大衣</b>
+      <span style="font-size:9.5px; color:#9ca3af">自动保存于 10:02</span>
+    </span>
+  </div>
+
+  <!-- 画布 -->
+  <div class="stage" id="stage">
+    <div class="dots"></div>
+
+    <!-- 顶部工具栏 -->
+    <div class="toolbar" id="toolbar">
+      <span class="tb icon-only" id="tplLibBtn" title="模版库">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h10M4 17h7"/><rect x="15" y="14" width="6" height="6" rx="1"/></svg>
+      </span>
+      <span class="tb" data-fake="标注"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>标注</span>
+      <span class="tb" data-fake="旋转与镜像"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-2.6-6.4M21 3v6h-6"/></svg>旋转与镜像</span>
+      <span class="tb" data-fake="裁剪"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2v14a2 2 0 0 0 2 2h14M18 22V8a2 2 0 0 0-2-2H2"/></svg>裁剪</span>
+      <span class="tb" data-fake="擦除"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 21-4-4a2 2 0 0 1 0-2.8L13.5 3.5a2 2 0 0 1 2.8 0l4.2 4.2a2 2 0 0 1 0 2.8L11 20"/><path d="M22 21H7"/></svg>擦除</span>
+      <span class="tb" data-fake="重绘"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m9 15 6-6"/></svg>重绘</span>
+      <span class="tb" data-fake="扩图"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="1.5"/><path d="M2 9V4a2 2 0 0 1 2-2h5M22 9V4a2 2 0 0 0-2-2h-5M2 15v5a2 2 0 0 0 2 2h5M22 15v5a2 2 0 0 1-2 2h-5"/></svg>扩图</span>
+      <span class="tb" data-fake="抠图"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 1 0 9 9c0-1-.2-2-.5-2.9"/><path d="M15 3.5 20.5 9M13 6l5 5"/></svg>抠图</span>
+      <span class="tb" data-fake="高清"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m7 15 3-4 2.5 3L15 11l2 4"/></svg>高清</span>
+      <span class="tb" data-fake="宫格切分"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg>宫格切分</span>
+      <span class="tb" data-fake="变体"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>变体</span>
+    </div>
+
+    <!-- 连线 + 节点（世界坐标）-->
+    <div class="world" id="world">
+      <svg id="wires" width="10" height="10"></svg>
+    </div>
+
+    <!-- 框选 -->
+    <div class="rubber" id="rubber"></div>
+
+    <!-- 组选中浮条 -->
+    <div class="float" id="float">
+      <span class="fb" data-fake="排列"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h6"/></svg>排列</span>
+      <span class="fb" id="dlBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 19h16"/></svg>批量下载</span>
+      <span class="fb primary" id="setTplBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><path d="M17 14v6M14 17h6"/></svg>设为模版</span>
+      <span class="fb" id="grpBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><path d="M10 6.5h7.5V14M14 17.5H6.5V10"/></svg><i id="grpTxt" style="font-style:normal">解组</i></span>
+    </div>
+
+    <!-- 提示词输入条（真实样式复刻） -->
+    <div class="promptbar" id="promptbar">
+      <div class="pb-top">
+        <div class="pb-thumb"><img id="pbImg" src="" draggable="false"><span class="nb">1</span></div>
+        <div class="pb-mid">
+          <textarea id="pbInput" spellcheck="false" rows="2"></textarea>
+          <span class="pb-exp" data-fake="展开输入框"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span>
+        </div>
+      </div>
+      <div class="pb-ctl">
+        <span class="pb-pill" data-fake="切换模型"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="1.8"/><path d="m5 18 4.5-4.5 2.5 2.5L15 13l4 5"/></svg>Wimo Image 2<span class="cv">∨</span></span>
+        <span class="pb-pill" data-fake="切换比例">3:2 | 1k</span>
+        <span class="pb-ic" data-fake="参考图库"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 6.5C10.5 5 8.5 4.5 6 4.5c-1 0-2 .1-3 .4v13.6c1-.3 2-.4 3-.4 2.5 0 4.5.5 6 2 1.5-1.5 3.5-2 6-2 1 0 2 .1 3 .4V4.9c-1-.3-2-.4-3-.4-2.5 0-4.5.5-6 2z"/><path d="M12 6.5v14"/></svg></span>
+        <span class="pb-ic" data-fake="生成设置"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/></svg></span>
+        <span class="pb-pill" data-fake="切换张数">1张<span class="cv">∨</span></span>
+        <span class="pb-sp"></span>
+        <span class="pb-cr"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></svg>72</span>
+        <span class="pb-send" data-fake="重新生成"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 5v6a2 2 0 0 1-2 2H5"/><path d="m9 9-4 4 4 4"/></svg></span>
+      </div>
+    </div>
+
+    <!-- 底部状态条 -->
+    <div class="botbar">
+      <span class="chipbtn" data-fake="快捷键"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>快捷键</span>
+      <div class="zoombar">
+        <span class="zb" id="fitBtn" title="适应画布"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></span>
+        <span class="zb" data-fake="定位到内容"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/></svg></span>
+        <span class="zb" id="zoomOut">−</span>
+        <span class="pct" id="pct">85%</span>
+        <span class="zb" id="zoomIn">＋</span>
+      </div>
+    </div>
+
+    <!-- 右键菜单 -->
+    <div class="ctxmenu" id="ctxmenu">
+      <div class="mi" data-fake="复制节点">复制节点 <span class="ks">⌘C</span></div>
+      <div class="mi" data-fake="创建副本">创建副本</div>
+      <div class="mi" data-fake="粘贴">粘贴 <span class="ks">⌘+V</span></div>
+      <div class="sep"></div>
+      <div class="mi danger" data-fake="删除">删除 <span class="ks">Delete/Backspace</span></div>
+      <div class="sep"></div>
+      <div class="mi" data-fake="复制到剪贴板">复制到剪贴板</div>
+      <div class="mi" data-fake="保存到我的素材">保存到我的素材</div>
+      <div class="sep"></div>
+      <div class="mi" data-fake="整理全画布">整理全画布 <span class="ks">Ctrl+Shift+L</span></div>
+    </div>
+
+    <!-- 设为模版弹窗 -->
+    <div class="mask" id="maskTpl"></div>
+    <div class="dlg" id="dlgTpl">
+      <h3>设为模板 <span class="x" data-close>✕</span></h3>
+      <div class="desc">将当前选定的组合保存为模版，可在其他项目中复用，共选中 <b id="tplN">12</b> 个节点。</div>
+      <label class="fl">模版名称<em>*</em></label>
+      <input class="ipt" id="tplName" value="羊绒外套模板" maxlength="20">
+      <div class="cnt"><span id="tplCnt">6</span>/20</div>
+      <label class="fl">模版封面</label>
+      <div class="up" data-fake="上传模版封面">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m5 19 5-5 3 3 3-3 3 3"/></svg>
+      </div>
+      <label class="fl">模版描述</label>
+      <textarea class="ta" placeholder="（可选）描述模版的使用场景"></textarea>
+      <label class="fl">可见范围</label>
+      <div class="opt on" data-v="个人可见"><span class="radio"></span><span><b>个人可见</b><span>仅自己可见，可在自己的其他项目中复用</span></span></div>
+      <div class="opt" data-v="项目可见"><span class="radio"></span><span><b>项目可见</b><span>仅当前项目内可用，不可跨项目</span></span></div>
+      <div class="opt" data-v="公开（需审核）"><span class="radio"></span><span><b>公开（需审核）</b><span>提交公开审核，审核通过后所有用户可见</span></span></div>
+      <div class="btns">
+        <span class="btn ghost" data-close>取消</span>
+        <span class="btn dark" id="tplSave">保存模版</span>
+      </div>
+    </div>
+
+    <!-- 模版库弹窗 -->
+    <div class="mask" id="maskLib"></div>
+    <div class="dlg tpl" id="dlgLib">
+      <div class="hd">
+        <span class="t">模版库</span>
+        <span class="ops"><span class="i" data-fake="放大模版库">⤢</span><span class="i" data-close>✕</span></span>
+      </div>
+      <div class="tabs">
+        <span class="tab" data-tab="sys">系统模版</span>
+        <span class="tab on" data-tab="my">个人模版</span>
+      </div>
+      <div class="body" id="libBody">
+        <div class="empty" id="libEmpty">
+          <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><path d="M17 14v6M14 17h6"/></svg></div>
+          <p>还没有可用的模版</p>
+        </div>
+        <div class="grid" id="libGrid"></div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+  </div>
+</div>
+
+<script>
+/* ==================================================================
+ * 商品详情页工作台 · 演示复刻
+ * 真的：批量下载（本地图片逐张触发下载）、缩放/平移、节点拖动、弹窗交互
+ * 假的：其余按钮（点击给出 toast 反馈）
+ * ================================================================== */
+
+/* ---------- 节点数据（世界坐标 1:1 对照真实画布截图）----------
+   12 张图全部裁自真实工作台页面截图；w/h = 真实节点显示比例；dm = 节点右上的尺寸标注 */
+var NODES = [
+  {id:"n1",  x:25,  y:23,  w:210, h:209, img:"工作台-主图-01-白底.jpg",     tag:"主图-01-白底.jpg",        dm:"1024 × 1024", st:"8K",
+   dl:"羊绒大衣-主图-白底.jpg",
+   prompt:"1、第一张主图：高清白底主图、干净无水印、电商平台通用风格、主体清晰、光影自然、符合平台审核规则（900*900）"},
+  {id:"n2",  x:25,  y:253, w:210, h:211, img:"工作台-主图-02-模特.jpg",     tag:"主图-02-模特.jpg",        dm:"1024 × 1024", st:"8K",
+   dl:"羊绒大衣-主图-模特.jpg",
+   prompt:"2、第二张主图：模特主图。模特长发温婉。风格：都市通勤。场景：高端写字楼大厅。整体轻奢质感。色调整体金色，光影自然。画面布局协调。禁止卡通等元素出现。"},
+  {id:"n3",  x:25,  y:492, w:210, h:205, img:"工作台-主图-03-面料细节.jpg", tag:"主图-03-面料细节.jpg",    dm:"1024 × 1024", st:"8K",
+   dl:"羊绒大衣-主图-面料细节.jpg",
+   prompt:"3、第三张主图：面料细节图。突出羊绒的细腻柔软感觉，质感轻奢。"},
+  {id:"n4",  x:385, y:17,  w:147, h:194, img:"工作台-详情-首屏海报.jpg",    tag:"首屏海报图",              dm:"864 × 1152",
+   dl:"羊绒大衣-首屏海报图.jpg",
+   prompt:"首屏海报图：使用主图的模特图，再写一段文案，突出剪裁、面料跟使用场景。"},
+  {id:"n5",  x:385, y:236, w:147, h:194, img:"工作台-详情-核心卖点.jpg",    tag:"核心卖点汇总图",          dm:"864 × 1152",
+   dl:"羊绒大衣-核心卖点图.jpg",
+   prompt:"核心卖点汇总图：凸显面料100%山羊绒的金贵感、从牧场到成衣原料可溯源、无过度染色环保自然，三大买点。场景：高原牧场，有山羊群。"},
+  {id:"n6",  x:385, y:455, w:147, h:112, img:"工作台-详情-规格参数.jpg",    tag:"规格参数图",              dm:"1296 × 864",
+   dl:"羊绒大衣-规格参数图.jpg",
+   prompt:"规格参数图：尺寸 S-XXL；颜色：白色、米色、驼色；材质：100%山羊绒；重量：500G。"},
+  {id:"n7",  x:385, y:585, w:147, h:121, img:"工作台-详情-售后保障.jpg",    tag:"售后/保障说明图",         dm:"1296 × 864",
+   dl:"羊绒大衣-售后保障图.jpg",
+   prompt:"5、 售后/保障说明图  发货说明:24小时发货，包邮 质保:1年 免费干洗3次，需到店预约 退换:7天无理由退换 洗涤:仅支持干洗"},
+  {id:"n8",  x:629, y:4,   w:146, h:194, img:"工作台-特写-面料.jpg",        tag:"产品细节节点图-特写面料", dm:"864 × 1152", grp:1,
+   dl:"羊绒大衣-特写面料.jpg",
+   prompt:"特写面料：山羊绒的柔软精贵，保暖性非常好，犹如妈妈的怀抱，轻柔。文案突出「100%山羊绒，冬日衣橱备受钟爱的百搭单品」。"},
+  {id:"n9",  x:629, y:231, w:146, h:194, img:"工作台-特写-袖口.jpg",        tag:"产品细节节点图-特写袖口", dm:"864 × 1152", grp:1,
+   dl:"羊绒大衣-特写袖口.jpg",
+   prompt:"特写袖口：卷边袖口，细节考究。"},
+  {id:"n10", x:629, y:456, w:146, h:195, img:"工作台-特写-领口.jpg",        tag:"产品细节节点图-特写领口", dm:"864 × 1152", grp:1,
+   dl:"羊绒大衣-特写领口.jpg",
+   prompt:"特写领口：利落翻驳领，挺括有型。"},
+  {id:"n11", x:813, y:131, w:145, h:194, img:"工作台-特写-内衬.jpg",        tag:"产品细节节点图-特写内衬", dm:"864 × 1152", grp:1,
+   dl:"羊绒大衣-特写内衬.jpg",
+   prompt:"特写内衬：内衬细节，亲肤顺滑。"},
+  {id:"n12", x:813, y:382, w:145, h:194, img:"工作台-特写-门襟.jpg",        tag:"产品细节节点图-特写门襟", dm:"864 × 1152", grp:1,
+   dl:"羊绒大衣-特写门襟.jpg",
+   prompt:"特写门襟：简约单排扣门襟，利落收边。"}
+];
+/* 生成关系连线（对照真实画布的扇入/扇出） */
+var WIRES = [["n1","n4"],["n2","n4"],["n2","n5"],["n3","n5"],["n1","n6"],["n3","n6"],["n2","n7"],["n3","n7"],
+             ["n5","n8"],["n5","n9"],["n5","n10"],["n5","n11"],["n5","n12"]];
+var WORLD_W = 982, WORLD_H = 750, TAGH = 18;
+
+var $ = function(s){ return document.querySelector(s) };
+var world=$("#world"), stage=$("#stage"), wires=$("#wires");
+var sel={}, z=1, tx=0, ty=0;
+
+/* ---------- 渲染节点 ---------- */
+var IMG_TAG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2.5"/><circle cx="9" cy="9" r="1.8"/><path d="m5 18 4.5-4.5 2.5 2.5L15 13l4 5"/></svg>';
+NODES.forEach(function(n){
+  n.el=document.createElement("div");
+  n.el.className="node"+(n.grp?" grp":"");
+  n.el.style.left=n.x+"px"; n.el.style.top=n.y+"px"; n.el.style.width=n.w+"px";
+  n.el.innerHTML='<div class="tag">'+IMG_TAG+'<span>'+n.tag+'</span>'+(n.dm?'<span class="dm">'+n.dm+'</span>':'')+'</div>'
+    +'<div class="card" style="width:'+n.w+'px;height:'+n.h+'px"><img src="'+n.img+'" draggable="false">'
+    +(n.st?'<span class="st">'+n.st+'</span>':'')+'</div>';
+  world.appendChild(n.el);
+});
+var byId={}; NODES.forEach(function(n){ byId[n.id]=n });
+
+/* ---------- 连线 ---------- */
+function drawWires(){
+  var W=world.scrollWidth||WORLD_W;
+  wires.setAttribute("width",WORLD_W); wires.setAttribute("height",WORLD_H);
+  var d="";
+  WIRES.forEach(function(w){
+    var a=byId[w[0]], b=byId[w[1]];
+    var x1=a.x+a.w+2, y1=a.y+TAGH+a.h/2, x2=b.x-2, y2=b.y+TAGH+b.h/2;
+    var dx=Math.max(60,(x2-x1)*.45);
+    d+='<path d="M'+x1+' '+y1+' C'+(x1+dx)+' '+y1+','+(x2-dx)+' '+y2+','+x2+' '+y2+'" fill="none" stroke="#c9c9c4" stroke-width="1.4"/>';
+  });
+  wires.innerHTML=d;
+}
+
+/* ---------- 缩放 / 平移 ---------- */
+function apply(){ world.style.transform="translate("+tx+"px,"+ty+"px) scale("+z+")"; $("#pct").textContent=Math.round(z*100)+"%" }
+function fit(){
+  var r=stage.getBoundingClientRect(), pad=26, availW=r.width-pad*2, availH=r.height-pad*2-34;
+  z=Math.min(availW/WORLD_W, availH/WORLD_H); z=Math.max(.12,Math.min(z,1.5));
+  tx=(r.width-WORLD_W*z)/2; ty=(r.height-WORLD_H*z)/2+8; apply();
+}
+/* 初始视图：接近真实工作台全景观感（世界 982×750 ≈ 636px 视口 0.62 倍），可滚轮平移看细节 */
+function initView(){
+  z=.62; tx=(stage.clientWidth-WORLD_W*z)/2; ty=8; apply();
+}
+function zoomAt(cx,cy,f){
+  var nz=Math.max(.12,Math.min(2.5,z*f)); f=nz/z;
+  tx=cx-(cx-tx)*f; ty=cy-(cy-ty)*f; z=nz; apply();
+}
+$("#zoomIn").onclick=function(){ var r=stage.getBoundingClientRect(); zoomAt(r.width/2,r.height/2,1.12) };
+$("#zoomOut").onclick=function(){ var r=stage.getBoundingClientRect(); zoomAt(r.width/2,r.height/2,1/1.12) };
+$("#fitBtn").onclick=fit;
+/* 滚轮 = 平移画布（不缩放）；缩放只用底栏按钮 */
+stage.addEventListener("wheel",function(e){
+  e.preventDefault();
+  tx-=e.deltaX; ty-=e.deltaY; apply();
+},{passive:false});
+
+/* ---------- 选中 ---------- */
+function refreshSel(){
+  NODES.forEach(function(n){ n.el.classList.toggle("sel",!!sel[n.id]) });
+  var ids=Object.keys(sel), fb=$("#float"), pb=$("#promptbar");
+  if(ids.length>=2){ fb.classList.add("show"); pb.classList.remove("show");
+    $("#grpTxt").textContent = ids.every(function(i){return byId[i].grp}) ? "解组":"打组";
+  } else if(ids.length===1){
+    fb.classList.remove("show");
+    var n=byId[ids[0]];
+    $("#pbImg").src=n.img; $("#pbInput").value=n.prompt; pb.classList.add("show");
+  } else { fb.classList.remove("show"); pb.classList.remove("show") }
+}
+function clearSel(){ sel={}; refreshSel() }
+NODES.forEach(function(n){
+  n.el.addEventListener("pointerdown",function(e){
+    if(e.button===2) return;                 // 右键交给 contextmenu
+    e.stopPropagation();
+    if(e.shiftKey){ if(sel[n.id]) delete sel[n.id]; else sel[n.id]=1 }
+    else if(!sel[n.id]){ sel={}; sel[n.id]=1 }
+    refreshSel();
+    /* 拖动 */
+    var sx=e.clientX, sy=e.clientY, ox=n.x, oy=n.y, moved=false, others=[];
+    if(e.shiftKey&&Object.keys(sel).length>1){ for(var k in sel) if(k!==n.id) others.push(byId[k]) }
+    function mv(ev){
+      var dx=(ev.clientX-sx)/z, dy=(ev.clientY-sy)/z;
+      if(Math.abs(dx)+Math.abs(dy)>2) moved=true;
+      n.x=ox+dx; n.y=oy+dy;
+      n.el.style.left=n.x+"px"; n.el.style.top=n.y+"px";
+      others.forEach(function(o){ o.x=o._ox+dx; o.y=o._oy+dy; o.el.style.left=o.x+"px"; o.el.style.top=o.y+"px" });
+      drawWires();
+    }
+    function up(){ window.removeEventListener("pointermove",mv); window.removeEventListener("pointerup",up);
+      if(!moved){ /* 原地点击，已处理选中 */ } }
+    if(others.length) others.forEach(function(o){ o._ox=o.x; o._oy=o.y });
+    window.addEventListener("pointermove",mv); window.addEventListener("pointerup",up);
+  });
+});
+
+/* 空白：拖动平移 / 框选 */
+var rub=$("#rubber");
+stage.addEventListener("pointerdown",function(e){
+  if(e.target.closest(".node")||e.target.closest(".toolbar")||e.target.closest(".float")
+     ||e.target.closest(".botbar")||e.target.closest(".promptbar")||e.button===2) return;
+  clearSel(); hideMenus();
+  var r=stage.getBoundingClientRect(), sx=e.clientX-r.left, sy=e.clientY-r.top;
+  var panning=true, moved=false;
+  function mv(ev){
+    var dx=ev.clientX-r.left-sx, dy=ev.clientY-r.top-sy;
+    if(!moved && Math.abs(dx)+Math.abs(dy)>4){ moved=true;
+      /* 超过阈值升级为框选 */
+      panning=false; rub.style.display="block";
+    }
+    if(panning){ tx+=ev.movementX; ty+=ev.movementY; apply(); }
+    else{ rub.style.left=Math.min(sx,dx+sx)+"px"; rub.style.top=Math.min(sy,dy+sy)+"px";
+          rub.style.width=Math.abs(dx)+"px"; rub.style.height=Math.abs(dy)+"px"; }
+  }
+  function up(){
+    window.removeEventListener("pointermove",mv); window.removeEventListener("pointerup",up);
+    if(rub.style.display==="block"){
+      var rr=rub.getBoundingClientRect();
+      NODES.forEach(function(n){
+        var nr=n.el.getBoundingClientRect();
+        if(nr.left<rr.right&&nr.right>rr.left&&nr.top<rr.bottom&&nr.bottom>rr.top) sel[n.id]=1;
+      });
+      rub.style.display="none"; refreshSel();
+      if(!Object.keys(sel).length) clearSel();
+    }
+  }
+  window.addEventListener("pointermove",mv); window.addEventListener("pointerup",up);
+});
+
+/* ---------- toast / 假按钮 ---------- */
+var toastTimer;
+function toast(msg){
+  var t=$("#toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.classList.remove("show") },2200);
+}
+function hideMenus(){ $("#ctxmenu").classList.remove("show") }
+document.addEventListener("pointerdown",function(e){
+  if(!e.target.closest(".ctxmenu")) hideMenus();
+});
+/* 所有 data-fake 元素：假 UI，点了给反馈 */
+document.addEventListener("click",function(e){
+  var el=e.target.closest("[data-fake]");
+  if(el) toast("「"+el.getAttribute("data-fake")+"」演示环境仅作展示");
+});
+$(".top .back").addEventListener("click",function(){ toast("返回生意百宝箱（演示）") });
+
+/* ---------- 批量下载（真下载） ---------- */
+$("#dlBtn").addEventListener("click",function(){
+  var ids=Object.keys(sel), list=ids.length?ids.map(function(i){return byId[i]}):NODES;
+  list.forEach(function(n,i){
+    setTimeout(function(){
+      var a=document.createElement("a");
+      a.href=n.img; a.download=n.dl||n.tag; document.body.appendChild(a); a.click(); a.remove();
+    }, i*180);
+  });
+  toast("开始下载 "+list.length+" 个文件 — 浏览器若询问「允许下载多个文件」，请点允许");
+});
+
+/* ---------- 打组 / 解组 ---------- */
+$("#grpBtn").addEventListener("click",function(){
+  var ids=Object.keys(sel); if(!ids.length) return;
+  var toGroup=!ids.every(function(i){return byId[i].grp});
+  ids.forEach(function(i){ byId[i].grp=toGroup; byId[i].el.classList.toggle("grp",toGroup) });
+  $("#grpTxt").textContent=toGroup?"解组":"打组";
+  toast(toGroup?"已打组（演示）":"已解组（演示）");
+});
+
+/* ---------- 提示词输入条：文本可编辑，编辑结果随选中节点保存 ---------- */
+$("#pbInput").addEventListener("change",function(){
+  var ids=Object.keys(sel); if(ids.length!==1) return;
+  byId[ids[0]].prompt=$("#pbInput").value;
+});
+
+/* ---------- 右键菜单 ---------- */
+var ctx=$("#ctxmenu");
+stage.addEventListener("contextmenu",function(e){
+  var ne=e.target.closest(".node");
+  if(ne){
+    var id=NODES.filter(function(n){return n.el===ne})[0].id;
+    if(!sel[id]){ sel={}; sel[id]=1; refreshSel() }
+  } else clearSel();
+  e.preventDefault();
+  var r=stage.getBoundingClientRect();
+  ctx.style.left=Math.min(e.clientX-r.left, r.width-200)+"px";
+  ctx.style.top=Math.min(e.clientY-r.top, r.height-260)+"px";
+  ctx.classList.add("show");
+});
+ctx.addEventListener("click",function(e){
+  var mi=e.target.closest(".mi"); if(!mi) return;
+  toast("「"+mi.textContent.replace(/⌘.*|Delete.*|Ctrl.*/,"").trim()+"」（演示）");
+  hideMenus();
+});
+
+/* ---------- 设为模版弹窗 ---------- */
+var dlgTpl=$("#dlgTpl"), maskTpl=$("#maskTpl");
+$("#setTplBtn").addEventListener("click",function(){
+  var n=Object.keys(sel).length; $("#tplN").textContent=n||12;
+  dlgTpl.classList.add("show"); maskTpl.classList.add("show"); hideMenus();
+});
+function closeTpl(){ dlgTpl.classList.remove("show"); maskTpl.classList.remove("show") }
+maskTpl.addEventListener("click",closeTpl);
+dlgTpl.querySelectorAll("[data-close]").forEach(function(x){ x.addEventListener("click",closeTpl) });
+$("#tplName").addEventListener("input",function(){ $("#tplCnt").textContent=this.value.length });
+dlgTpl.querySelectorAll(".opt").forEach(function(o){
+  o.addEventListener("click",function(){
+    dlgTpl.querySelectorAll(".opt").forEach(function(x){ x.classList.remove("on") });
+    o.classList.add("on");
+  });
+});
+$("#tplSave").addEventListener("click",function(){
+  var name=$("#tplName").value.trim()||"未命名模版";
+  closeTpl();
+  savedTpl={name:name, cov:[byId.n4.img,byId.n8.img,byId.n10.img]};
+  renderLib(); toast("模版「"+name+"」已保存，可在模版库查看");
+});
+
+/* ---------- 模版库弹窗 ---------- */
+var dlgLib=$("#dlgLib"), maskLib=$("#maskLib"), savedTpl=null;
+$("#tplLibBtn").addEventListener("click",function(){
+  dlgLib.classList.add("show"); maskLib.classList.add("show"); hideMenus();
+});
+function closeLib(){ dlgLib.classList.remove("show"); maskLib.classList.remove("show") }
+maskLib.addEventListener("click",closeLib);
+dlgLib.querySelectorAll("[data-close]").forEach(function(x){ x.addEventListener("click",closeLib) });
+dlgLib.querySelectorAll(".tab").forEach(function(t){
+  t.addEventListener("click",function(){
+    dlgLib.querySelectorAll(".tab").forEach(function(x){ x.classList.remove("on") });
+    t.classList.add("on");
+    toast(t.textContent+"（演示）");
+  });
+});
+function renderLib(){
+  var g=$("#libGrid"), e=$("#libEmpty");
+  if(!savedTpl){ g.style.display="none"; e.style.display="block"; return }
+  e.style.display="none"; g.style.display="flex"; g.style.gap="10px";
+  g.innerHTML='<div class="tplcard"><div class="cov">'
+    +savedTpl.cov.map(function(s){return '<img src="'+s+'">'}).join("")
+    +'</div><div class="nm">'+savedTpl.name+'<i>12 节点</i></div></div>';
+}
+
+/* ---------- 初始 ---------- */
+drawWires();
+NODES.filter(function(n){return n.grp}).forEach(function(n){ sel[n.id]=1 });
+refreshSel();
+initView();
+window.addEventListener("resize",initView);
+</script>
+</body>
+</html>

@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>双十一·乳品饮料限时折扣方案｜连锁零售旗舰版123</title>
+<style>
+  :root{
+    --paper:#f7f3ec;
+    --paper-2:#fffdf9;
+    --ink:#1e232c;
+    --ink-2:#4a5260;
+    --ink-3:#8a8478;
+    --line:#e2d9c9;
+    --gold:#a8842c;
+    --gold-soft:#f0e2c0;
+    --red:#b23a34;
+    --red-soft:#f7e5e2;
+    --green:#3f7d5a;
+    --green-soft:#e5f0e8;
+    --shadow:0 1px 2px rgba(30,35,44,.05),0 8px 24px -12px rgba(30,35,44,.18);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Source Han Sans SC",system-ui,-apple-system,"Segoe UI",sans-serif;
+    font-size:15px;
+    line-height:1.7;
+  }
+  .page{max-width:1080px;margin:0 auto;padding:0 20px 72px}
+
+  /* ---------- 头部 ---------- */
+  .hero{
+    position:relative;
+    margin:0 -20px 0;
+    padding:56px 36px 44px;
+    background:
+      radial-gradient(760px 300px at 82% -30%, #fff6df 0%, rgba(255,246,223,0) 62%),
+      radial-gradient(520px 260px at 12% -10%, #fdeee6 0%, rgba(253,238,230,0) 60%),
+      linear-gradient(180deg,#fbf7f0 0%,var(--paper) 100%);
+    border-bottom:1px solid var(--line);
+    overflow:hidden;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;right:-70px;top:-90px;width:300px;height:300px;border-radius:50%;
+    background:radial-gradient(circle at 40% 40%, #fbeece 0%, #f6e2b4 45%, rgba(246,226,180,0) 72%);
+    opacity:.85;pointer-events:none;
+  }
+  .hero-inner{position:relative;z-index:1;max-width:1080px;margin:0 auto}
+  .kicker{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:12.5px;letter-spacing:.16em;color:var(--gold);
+    border:1px solid var(--gold-soft);background:#fffaf0;
+    padding:4px 12px;border-radius:999px;font-weight:600;
+  }
+  h1{
+    font-family:Georgia,"Songti SC","Noto Serif SC",serif;
+    font-size:clamp(26px,4.4vw,40px);
+    line-height:1.28;margin:18px 0 10px;letter-spacing:.01em;font-weight:700;
+  }
+  h1 .accent{color:var(--red)}
+  .hero-sub{color:var(--ink-2);font-size:15px;max-width:62ch;margin:0}
+  .hero-meta{
+    display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;
+  }
+  .chip{
+    background:var(--paper-2);border:1px solid var(--line);border-radius:999px;
+    padding:5px 13px;font-size:13px;color:var(--ink-2);
+  }
+  .chip b{color:var(--ink);font-weight:600}
+
+  /* ---------- 通用块 ---------- */
+  section{margin-top:44px}
+  .sec-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:18px}
+  .sec-num{
+    flex:none;width:30px;height:30px;border-radius:8px;
+    background:var(--ink);color:#fff;font-size:13px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;letter-spacing:0;
+    font-family:Georgia,serif;
+  }
+  .sec-head h2{
+    font-family:Georgia,"Songti SC","Noto Serif SC",serif;
+    font-size:20px;margin:0;line-height:1.35;font-weight:700;
+  }
+  .sec-head p{margin:2px 0 0;color:var(--ink-3);font-size:13.5px}
+
+  .card{
+    background:var(--paper-2);border:1px solid var(--line);border-radius:var(--radius);
+    padding:22px 24px;box-shadow:var(--shadow);
+  }
+  .card + .card{margin-top:16px}
+  .card h3{
+    font-size:15.5px;margin:0 0 12px;font-weight:700;display:flex;align-items:center;gap:8px;
+  }
+  .card h3::before{content:"";width:3px;height:15px;border-radius:2px;background:var(--gold)}
+  .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+
+  /* ---------- 表格 ---------- */
+  .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;border:1px solid var(--line);background:var(--paper-2)}
+  table{border-collapse:collapse;width:100%;min-width:560px;font-size:14px}
+  caption{text-align:left;padding:12px 16px 0;font-size:13px;color:var(--ink-3)}
+  th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  thead th{
+    background:#f4efe4;font-weight:600;font-size:13px;color:var(--ink-2);
+    white-space:nowrap;letter-spacing:.02em;border-bottom:1px solid var(--line);
+  }
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:nth-child(even){background:#fdfbf7}
+  .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .tot td{font-weight:700;background:#f7f2e6 !important;border-top:1px solid var(--gold-soft)}
+  .t-note{font-size:12.5px;color:var(--ink-3);margin:10px 2px 0;line-height:1.65}
+
+  /* ---------- 标签 ---------- */
+  .tag{display:inline-block;padding:1px 8px;border-radius:6px;font-size:12px;font-weight:600;white-space:nowrap;line-height:1.6}
+  .tag-warn{background:var(--red-soft);color:var(--red)}
+  .tag-ok{background:var(--green-soft);color:var(--green)}
+  .tag-gold{background:var(--gold-soft);color:#7d6119}
+  .tag-mute{background:#eeebe4;color:var(--ink-3)}
+
+  /* ---------- 条形 ---------- */
+  .bar-row{display:grid;grid-template-columns:96px 1fr 84px;gap:12px;align-items:center;margin-bottom:9px;font-size:13.5px}
+  .bar-row .lbl{color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bar-track{background:#efe9dd;border-radius:6px;height:14px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,#c9a227,#a8842c)}
+  .bar-fill.dim{background:linear-gradient(90deg,#cfc4ac,#b8ab90)}
+  .bar-row .val{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-2);font-size:13px}
+
+  /* ---------- 商品卡 ---------- */
+  .tier{
+    border:1px solid var(--line);border-radius:var(--radius);background:var(--paper-2);
+    box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;
+  }
+  .tier-top{padding:18px 20px 16px;border-bottom:1px dashed var(--line);position:relative}
+  .tier-top .scene{font-size:12.5px;color:var(--ink-3);letter-spacing:.04em}
+  .tier-top h3{margin:6px 0 0;font-family:Georgia,"Songti SC",serif;font-size:19px;font-weight:700}
+  .tier-top .price{margin-top:10px;display:flex;align-items:baseline;gap:6px}
+  .tier-top .price .v{font-size:30px;font-weight:700;color:var(--red);font-family:Georgia,serif;line-height:1}
+  .tier-top .price .u{font-size:13px;color:var(--ink-3)}
+  .tier-top .price .was{margin-left:auto;font-size:12.5px;color:var(--ink-3);text-decoration:line-through}
+  .tier-body{padding:16px 20px 18px;flex:1;display:flex;flex-direction:column;gap:14px}
+  .tier-body ul{margin:0;padding-left:0;list-style:none}
+  .tier-body li{padding:6px 0;border-bottom:1px dotted var(--line);display:flex;justify-content:space-between;gap:12px;font-size:13.5px}
+  .tier-body li:last-child{border-bottom:none}
+  .tier-body li .nm{color:var(--ink-2)}
+  .tier-body li .pr{white-space:nowrap;color:var(--ink-3);font-variant-numeric:tabular-nums}
+  .tier-fig{display:flex;gap:8px;flex-wrap:wrap;font-size:12.5px}
+  .tier-fig span{background:#f6f1e6;border-radius:6px;padding:4px 9px;color:var(--ink-2)}
+  .tier-fig span b{color:var(--ink)}
+  .pack{font-size:13px;color:var(--ink-2);background:#fbf8f2;border-left:2px solid var(--gold-soft);padding:9px 12px;border-radius:0 8px 8px 0;line-height:1.65}
+
+  /* ---------- 节奏时间轴 ---------- */
+  .tl{position:relative;padding-left:26px}
+  .tl::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:linear-gradient(180deg,var(--gold-soft),var(--line))}
+  .tl-item{position:relative;padding:0 0 22px}
+  .tl-item:last-child{padding-bottom:0}
+  .tl-item::before{
+    content:"";position:absolute;left:-22px;top:6px;width:10px;height:10px;border-radius:50%;
+    background:var(--paper);border:2px solid var(--gold);
+  }
+  .tl-item.hot::before{background:var(--red);border-color:var(--red);box-shadow:0 0 0 4px var(--red-soft)}
+  .tl-item .d{font-size:12.5px;color:var(--gold);font-weight:700;letter-spacing:.03em;font-variant-numeric:tabular-nums}
+  .tl-item .t{font-weight:700;margin:1px 0 3px;font-size:15px}
+  .tl-item .b{font-size:13.5px;color:var(--ink-2)}
+
+  /* ---------- 列表 ---------- */
+  ul.plain{margin:0;padding-left:0;list-style:none}
+  ul.plain li{position:relative;padding:7px 0 7px 22px;font-size:14px;color:var(--ink-2);border-bottom:1px dotted var(--line)}
+  ul.plain li:last-child{border-bottom:none}
+  ul.plain li::before{content:"";position:absolute;left:4px;top:16px;width:6px;height:6px;border-radius:50%;background:var(--gold-soft);border:1px solid var(--gold)}
+  ul.plain li b{color:var(--ink)}
+  ul.plain.risk li::before{background:var(--red-soft);border-color:var(--red)}
+
+  /* ---------- 提示条 ---------- */
+  .callout{
+    border-radius:12px;padding:14px 18px;font-size:13.5px;line-height:1.75;
+    background:#fdf6ec;border:1px solid var(--gold-soft);color:#5c4a1d;
+  }
+  .callout.warn{background:var(--red-soft);border-color:#eecfcb;color:#7d2b26}
+  .callout strong{font-weight:700}
+
+  footer{margin-top:52px;padding-top:20px;border-top:1px solid var(--line);color:var(--ink-3);font-size:12.5px;line-height:1.8}
+
+  @media (max-width:640px){
+    .hero{padding:38px 20px 32px}
+    .card{padding:18px 16px}
+    .bar-row{grid-template-columns:78px 1fr 70px;font-size:12.5px}
+    th,td{padding:9px 10px;font-size:13px}
+    .sec-head h2{font-size:17.5px}
+  }
+  @media print{
+    body{background:#fff}
+    .card,.tier{box-shadow:none}
+    section{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <span class="kicker">双十一 · 限时折扣方案</span>
+    <h1>把一个月没动销的<b>乳品饮料</b>，<br>用<span class="accent">5 折爆款 + 6~7 折清仓</span>接住双十一</h1>
+    <p class="hero-sub">对象：近 30 天销量垫底的商品分组「乳品饮料」。全部门店参与，定向「近 30 天未消费客户」。方案含选品、折扣力度、活动时间、库存与推广节奏、风险预案，可直接照着落地。</p>
+    <div class="hero-meta">
+      <span class="chip">店铺 <b>连锁零售旗舰版123</b></span>
+      <span class="chip">行业 <b>食品饮料 / 休闲食品</b></span>
+      <span class="chip">在售商品 <b>324</b></span>
+      <span class="chip">可参与门店 <b>10</b></span>
+      <span class="chip">数据截至 <b>2026-10-12</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- 1 主题与人群 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">1</span>
+      <div>
+        <h2>活动主题与目标人群</h2>
+        <p>一句话说清卖给谁、卖什么、凭什么买</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>活动主题</h3>
+      <p style="margin:0 0 14px;font-size:16px"><b>「双十一 · 乳饮清仓限量抢」——乳品饮料分组限时折扣专场</b></p>
+      <ul class="plain">
+        <li><b>一句话卖点</b>：多口味养乐多乳酸菌乳饮，双十一期间最低 <b>5 折</b>，售完即止。</li>
+        <li><b>为什么现在做</b>：这个分组近 30 天一件都没卖出去，库存却压了 <b>1,275 件</b>；双十一是全年流量峰值，用折扣把它一次性激活，比平时硬推划算。</li>
+        <li><b>已有资源联动</b>：店铺已建好「双十一礼遇好食光满赠」（10-20 至 11-11，满 199 赠原味咖啡），本活动时间整段落在它里面，可以直接冲凑单门槛。</li>
+      </ul>
+    </div>
+
+    <div class="grid-2" style="margin-top:16px">
+      <div class="card">
+        <h3>目标人群</h3>
+        <ul class="plain">
+          <li><b>圈选条件</b>：<b>近 30 天未消费客户</b>（系统人群，按“近 30 天内没有过成功支付订单”自动更新）。</li>
+          <li><b>为什么是他们</b>：店铺近 30 天只有 24 位支付用户、访客 337 人，池子很小；直接对沉默客户做低价款召回，比对着已成交的 24 人重复推销更有增量。</li>
+          <li><b>注意</b>：人群是动态更新的，活动期间会持续吸纳新的沉默客户，不需要手工维护名单。</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>近期经营底数（先看清楚）</h3>
+        <ul class="plain">
+          <li>近 30 天：访客 <b>337</b>、下单 <b>120</b> 单、支付人数 <b>24</b>、实收 <b>1,024.91 元</b>、客单价 <b>277.88 元</b>。</li>
+          <li>在售商品动销率仅 <b>2.03%</b>，售后率 <b>22.12%</b>。</li>
+          <li>结论：店铺<b>真实成交体量还很小</b>，这次动作应定位成「低成本清库存 + 拉沉默客户回店」，先跑通链路再谈规模，不建议为此额外压货或大额投放。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 数据回顾 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">2</span>
+      <div>
+        <h2>为什么是这个分组：近 30 天商品分组销量盘点</h2>
+        <p>先把“最差”选出来，再谈折扣</p>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-bottom:16px">
+      <strong>先说清楚一个事实：</strong>按 2026-09-13 至 10-12 统计，有<b>多个分组并列最低——都是 0 件</b>，并不存在唯一的“最差”。最终选「乳品饮料」，是因为它同时满足：<b>销量为 0、库存 1,275 件有清仓空间、且和店铺主营（食品饮料）一致</b>，是这批滞销分组里最适合做折扣活动的一个。
+    </div>
+
+    <div class="card">
+      <h3>分组近 30 天销量对比（并列垫底部分）</h3>
+      <div class="tbl-wrap">
+        <table>
+          <caption>近 30 天支付件数与当前可售库存，单位：件</caption>
+          <thead>
+            <tr><th>商品分组</th><th class="num">近 30 天支付件数</th><th class="num">可售库存</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><b>乳品饮料</b> <span class="tag tag-gold">本次对象</span></td><td class="num">0</td><td class="num">1,275</td><td>主营品类，8 款商品，清仓条件最好</td></tr>
+            <tr><td>成衣</td><td class="num">0</td><td class="num">1,607</td><td>高单价秋冬款，动销同样为零</td></tr>
+            <tr><td>手袋</td><td class="num">0</td><td class="num">1,598</td><td>配件类，客单适中</td></tr>
+            <tr><td>迪士尼网易云</td><td class="num">0</td><td class="num">83,400</td><td>库存体量最大，但以测试商品为主</td></tr>
+            <tr><td>皮皮测试</td><td class="num">0</td><td class="num">3,243</td><td>测试分组，不建议对外投放</td></tr>
+            <tr><td>361商品</td><td class="num">0</td><td class="num">1,100</td><td>—</td></tr>
+            <tr><td>红豆居家</td><td class="num">0</td><td class="num">548</td><td>—</td></tr>
+            <tr><td>福利</td><td class="num">0</td><td class="num">1,049</td><td>—</td></tr>
+            <tr class="tot"><td>店铺在售合计</td><td class="num">—</td><td class="num">324 款商品</td><td>全店近 30 天动销率 2.03%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="t-note">读法：垫底分组不止一个，选品时优先看“<b>有库存 + 是主营品类 + 商品本身是正常在售实物</b>”三条，乳品饮料是唯一同时满足的。其余分组要么是测试数据，要么和主营不搭。</p>
+    </div>
+
+    <div class="card">
+      <h3>乳品饮料分组的销售历史</h3>
+      <div style="margin-top:6px">
+        <div class="bar-row"><span class="lbl">2025-11</span><span class="bar-track"><span class="bar-fill dim" style="width:2%"></span></span><span class="val">0 件</span></div>
+        <div class="bar-row"><span class="lbl">2025-12</span><span class="bar-track"><span class="bar-fill" style="width:100%"></span></span><span class="val">14 件</span></div>
+        <div class="bar-row"><span class="lbl">2026-01</span><span class="bar-track"><span class="bar-fill" style="width:15%"></span></span><span class="val">2 件</span></div>
+        <div class="bar-row"><span class="lbl">2026-03</span><span class="bar-track"><span class="bar-fill" style="width:15%"></span></span><span class="val">2 件</span></div>
+        <div class="bar-row"><span class="lbl">近 30 天</span><span class="bar-track"><span class="bar-fill dim" style="width:2%"></span></span><span class="val">0 件</span></div>
+      </div>
+      <p class="t-note">历史最高的一个月也只卖出 14 件、实收 40.30 元，之后基本熄火。<b>说明这个分组不是“被价格挡住”，而是几乎没人看得到</b>——折扣要配合曝光才有意义，所以方案里必须带上推广节奏。</p>
+    </div>
+
+    <div class="callout warn" style="margin-top:16px">
+      <strong>口径说明：</strong>上一个双十一（2025-11-01 至 11-11）店铺商城的支付人数为 0、实收为空，<b>没有可参考的同比数据</b>。因此折扣力度改用「库存规模 + 分组历史最好月销 + 同品类促销惯例」推导，不套用往年双十一成绩。
+    </div>
+  </section>
+
+  <!-- 3 商品与折扣 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">3</span>
+      <div>
+        <h2>商品、库存与折扣力度</h2>
+        <p>折扣按“动销越差、让利越深”分三档</p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="tier">
+        <div class="tier-top">
+          <div class="scene">角色一 · 引流爆款</div>
+          <h3>养乐多红色原味</h3>
+          <div class="price"><span class="v">6.5</span><span class="u">元 / 件</span><span class="was">原价 13.00</span></div>
+        </div>
+        <div class="tier-body">
+          <ul>
+            <li><span class="nm">折扣力度</span><span class="pr">5 折</span></li>
+            <li><span class="nm">建议活动价</span><span class="pr">6.50 元</span></li>
+            <li><span class="nm">可售库存</span><span class="pr">209 件</span></li>
+            <li><span class="nm">累计销量 / 近 30 天</span><span class="pr">1 件 / 0 件</span></li>
+          </ul>
+          <div class="tier-fig">
+            <span>每人限购 <b>2 件</b></span>
+            <span>让利 <b>6.50 元/件</b></span>
+          </div>
+          <div class="pack"><b>为什么定 5 折：</b>它是价格最低、认知度最高的基础口味，把活动价压到 6.5 元才能撑起“双十一 5 折”的心智。用限购拦住囤货，避免被单一人群扫空、失去清仓意义。</div>
+        </div>
+      </div>
+
+      <div class="tier">
+        <div class="tier-top">
+          <div class="scene">角色二 · 清仓主推</div>
+          <h3>蓝色低糖 / 黄色含维生素</h3>
+          <div class="price"><span class="v">8.9</span><span class="u">元 / 件</span><span class="was">原价 13.00</span></div>
+        </div>
+        <div class="tier-body">
+          <ul>
+            <li><span class="nm">折扣力度</span><span class="pr">约 6.8 折</span></li>
+            <li><span class="nm">建议活动价</span><span class="pr">8.90 元</span></li>
+            <li><span class="nm">可售库存</span><span class="pr">各 209 件</span></li>
+            <li><span class="nm">累计销量 / 近 30 天</span><span class="pr">0、1 件 / 0 件</span></li>
+          </ul>
+          <div class="tier-fig">
+            <span>库存合计 <b>418 件</b></span>
+            <span>让利 <b>4.10 元/件</b></span>
+          </div>
+          <div class="pack"><b>为什么定 6.8 折：</b>这两款几乎从没卖动过（蓝色低糖累计 0 件），是本次最需要清理的库存，让利要明显大于动销较好的口味，才能推得动。</div>
+        </div>
+      </div>
+
+      <div class="tier">
+        <div class="tier-top">
+          <div class="scene">角色三 · 稳价走量</div>
+          <h3>养乐多绿色青提味</h3>
+          <div class="price"><span class="v">9.9</span><span class="u">元 / 件</span><span class="was">原价 13.00</span></div>
+        </div>
+        <div class="tier-body">
+          <ul>
+            <li><span class="nm">折扣力度</span><span class="pr">约 7.6 折</span></li>
+            <li><span class="nm">建议活动价</span><span class="pr">9.90 元</span></li>
+            <li><span class="nm">可售库存</span><span class="pr">209 件</span></li>
+            <li><span class="nm">累计销量 / 近 30 天</span><span class="pr">10 件 / 0 件</span></li>
+          </ul>
+          <div class="tier-fig">
+            <span>分组内 <b>动销最好</b></span>
+            <span>让利 <b>3.10 元/件</b></span>
+          </div>
+          <div class="pack"><b>为什么力度最小：</b>它是这个分组里累计卖得最多的口味（10 件），说明本身有人认，不必杀到最低价，留着做价格锚点，让 6.5 元的爆款显得更值。</div>
+        </div>
+      </div>
+
+      <div class="tier">
+        <div class="tier-top">
+          <div class="scene">角色四 · 高价位清仓</div>
+          <h3>养乐多粉色蜜桃味</h3>
+          <div class="price"><span class="v">15.9</span><span class="u">元 / 件</span><span class="was">原价 26.00</span></div>
+        </div>
+        <div class="tier-body">
+          <ul>
+            <li><span class="nm">折扣力度</span><span class="pr">约 6.1 折</span></li>
+            <li><span class="nm">建议活动价</span><span class="pr">15.90 元</span></li>
+            <li><span class="nm">可售库存</span><span class="pr">209 件</span></li>
+            <li><span class="nm">累计销量 / 近 30 天</span><span class="pr">4 件 / 0 件</span></li>
+          </ul>
+          <div class="tier-fig">
+            <span>绝对值让利 <b>10.10 元</b></span>
+            <span>分组内 <b>最贵款</b></span>
+          </div>
+          <div class="pack"><b>为什么看绝对让利：</b>它标价是其他口味的 2 倍，只按比例打折的话绝对金额还是偏高、不容易动。压到 15.9 元、让利 10 元，视觉冲击最强。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tbl-wrap" style="margin-top:16px">
+      <table>
+        <caption>乳品饮料分组商品清单与库存（价格、库存取自商品库，单位：元 / 件）</caption>
+        <thead>
+          <tr><th>商品</th><th class="num">原价</th><th class="num">活动价</th><th class="num">折扣</th><th class="num">可售库存</th><th>本次处理</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>养乐多红色原味</td><td class="num">13.00</td><td class="num">6.50</td><td class="num">5 折</td><td class="num">209</td><td><span class="tag tag-ok">参与 · 引流款</span></td></tr>
+          <tr><td>养乐多蓝色低糖</td><td class="num">13.00</td><td class="num">8.90</td><td class="num">约 6.8 折</td><td class="num">209</td><td><span class="tag tag-ok">参与 · 清仓</span></td></tr>
+          <tr><td>养乐多黄色含维生素</td><td class="num">13.00</td><td class="num">8.90</td><td class="num">约 6.8 折</td><td class="num">209</td><td><span class="tag tag-ok">参与 · 清仓</span></td></tr>
+          <tr><td>养乐多绿色青提味</td><td class="num">13.00</td><td class="num">9.90</td><td class="num">约 7.6 折</td><td class="num">209</td><td><span class="tag tag-ok">参与 · 稳价</span></td></tr>
+          <tr><td>养乐多粉色蜜桃味</td><td class="num">26.00</td><td class="num">15.90</td><td class="num">约 6.1 折</td><td class="num">209</td><td><span class="tag tag-ok">参与 · 清仓</span></td></tr>
+          <tr class="tot"><td>参与活动合计</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">1,045</td><td>5 款乳饮，各 209 件</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="t-note">分组里原有三个明显不属于乳饮的商品（一个 1,988 元的鞋子测试、一个 50 元预售款、一个 0 元服务），<b>已移出「乳品饮料」分组</b>，现在该分组下只剩这 5 款乳饮；商品名里的「测试商品，不发货，不退款」字样也已去掉。</p>
+  </section>
+
+  <!-- 4 时间与节奏 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">4</span>
+      <div>
+        <h2>活动时间与推广节奏</h2>
+        <p>预热 4 天 + 正式 7 天，整段落在已有满赠活动里</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <h3>活动配置一览</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>配置项</th><th>本次值</th><th>为什么这么定</th></tr></thead>
+          <tbody>
+            <tr><td>活动玩法</td><td><b>限时折扣</b></td><td>清库存、要短期冲量，限时折扣最直接</td></tr>
+            <tr><td>活动时间</td><td><b>2026-11-05 00:00:00 ~ 11-11 23:59:59（7 天）</b></td><td>覆盖双十一当天；7 天足够让低流量店铺跑出转化</td></tr>
+            <tr><td>预热设置</td><td><b>11-01 00:00 起定时预热，预热期可原价购买</b></td><td>提前 4 天让顾客看到活动、加购收藏，正式开抢才有人</td></tr>
+            <tr><td>适用门店</td><td><b>全部门店（10 家）</b></td><td>统一清仓，不挑店</td></tr>
+            <tr><td>适用人群</td><td><b>近 30 天未消费客户</b></td><td>定向召回沉默客户，避免只对老客让利</td></tr>
+            <tr><td>适用商品</td><td><b>乳品饮料分组 · 5 款养乐多乳饮</b></td><td>见上一节清单</td></tr>
+            <tr><td>下单限购</td><td><b>引流款每人限 2 件，其余不限</b></td><td>防扫货，兼顾清仓</td></tr>
+            <tr><td>订单关闭</td><td><b>下单后 15 分钟未付自动关闭</b></td><td>系统默认，释放被占库存</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>关键时间轴</h3>
+        <div class="tl">
+          <div class="tl-item">
+            <div class="d">10-20 → 10-31</div>
+            <div class="t">准备期</div>
+            <div class="b">核对商品与库存、把 3 个非乳饮商品移出分组、确认活动价、准备社群与门店物料；确认与「双十一礼遇好食光满赠」的价格叠加不冲突。</div>
+          </div>
+          <div class="tl-item">
+            <div class="d">11-01 → 11-04</div>
+            <div class="t">预热期</div>
+            <div class="b">活动对外可见但按原价卖。社群、朋友圈、门店海报统一预告「11-05 开抢，最低 5 折」，引导加购收藏。</div>
+          </div>
+          <div class="tl-item hot">
+            <div class="d">11-05 → 11-11</div>
+            <div class="t">正式开抢（资源集中投入）</div>
+            <div class="b">折扣生效。主推 6.5 元红色原味引流，其余口味做搭配推荐；同时引导凑单到满 199 / 359，触发已有的满赠（赠原味咖啡）。</div>
+          </div>
+          <div class="tl-item hot">
+            <div class="d">11-11 当天</div>
+            <div class="t">冲刺 + 客服待命</div>
+            <div class="b">当天二次触达已加购未支付人群；客服重点处理配送时效与售后咨询，乳饮要明确保质期与发货批次。</div>
+          </div>
+          <div class="tl-item">
+            <div class="d">11-12 → 11-15</div>
+            <div class="t">复盘</div>
+            <div class="b">看 5 款各自的动销与库存消耗，决定剩余库存是继续清还是拆到日常活动，沉淀成下一次大促的模板。</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="card">
+          <h3>库存安排</h3>
+          <ul class="plain">
+            <li><b>可放量</b>：5 款各 209 件，合计 <b>1,045 件</b>，全部是现货在售，不需要补货。</li>
+            <li><b>引流款控量</b>：红色原味设每人限购 2 件，防止被单一人群一次性买空。</li>
+            <li><b>安全线</b>：任一口味剩余可售低于 30 件时，及时下架或改为原价，避免超卖。</li>
+            <li><b>不压货</b>：本次活动只清现有库存，不因为双十一额外进货。</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>推广与联动</h3>
+          <ul class="plain">
+            <li><b>和满赠绑一起</b>：店铺已有「双十一礼遇好食光满赠」，满 199 赠原味咖啡、满 359 赠 2 份，活动时间覆盖本活动，凑单钩子直接现成。</li>
+            <li><b>主推话术</b>：主打“5 折抢养乐多”“多口味一次囤齐”，不做无底线的全线低价。</li>
+            <li><b>渠道</b>：社群 + 朋友圈 + 门店物料 + 商品页角标，低预算优先，先看转化再加投。</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 收益估算 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">5</span>
+      <div>
+        <h2>收益估算</h2>
+        <p>按三种清仓进度给量级，别按满仓售罄做预算</p>
+      </div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <caption>按参与商品均价约 10 元测算，单位：元</caption>
+        <thead>
+          <tr><th>情景</th><th class="num">售出件数</th><th class="num">库存消耗</th><th class="num">预估 GMV</th><th class="num">相对原价让利</th><th class="num">剩余库存</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>保守</b>（转化平淡）</td><td class="num">120</td><td class="num">约 11%</td><td class="num">1,200</td><td class="num">670</td><td class="num">925</td></tr>
+          <tr><td><b>中性</b> <span class="tag tag-gold">建议按此备货与排期</span></td><td class="num">260</td><td class="num">约 25%</td><td class="num">2,600</td><td class="num">1,450</td><td class="num">785</td></tr>
+          <tr><td><b>乐观</b>（预热转化好）</td><td class="num">520</td><td class="num">约 50%</td><td class="num">5,200</td><td class="num">2,900</td><td class="num">525</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="t-note">即便全部 1,045 件按活动价售罄，GMV 上限约 <b>10,471 元</b>、让利约 5,831 元。参照店铺近 30 天实收 1,024.91 元，<b>中性情景（约 2,600 元）已经是现有体量的 2.5 倍</b>，作为第一次清仓动作是合理目标。</p>
+
+    <div class="callout" style="margin-top:16px">
+      <strong>为什么不做毛利测算：</strong>这批商品的成本价字段为空（显示为 0），没有可信成本就不谈毛利率。上表只给 GMV 与让利额，<b>核价后再补毛利</b>。推广预算建议控制在预估 GMV 的 10% 以内。
+    </div>
+  </section>
+
+  <!-- 6 风险 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">6</span>
+      <div>
+        <h2>风险提醒</h2>
+        <p>每条都对应具体动作</p>
+      </div>
+    </div>
+    <div class="card">
+      <ul class="plain risk">
+        <li><b>商品本身仍是测试数据。</b>名称里的「测试商品，不发货，不退款」字样已去掉，但商品数据本身还是测试品。→ 上线前必须确认这 5 款可以真实履约（有货、能发、有保质期），否则会产生大量无法发货的订单。</li>
+        <li><b>成本价暂时空着。</b>已确认本次暂不维护成本价，所以无法判断折扣是否击穿成本。→ 需要时再单独核价，5 折 / 6.8 折能否承受以核价结果为准。</li>
+        <li><b>分组被“串”了商品。</b>「乳品饮料」分组里混着鞋子、预售款和一项 0 元服务。→ 活动只勾选 5 款乳饮，并顺手整理分组。</li>
+        <li><b>靠折扣不一定能救活。</b>该分组近 30 天 0 动销，历史最好月也只卖 14 件。→ 折扣必须配合曝光和凑单，只降价不推广大概率无效。</li>
+        <li><b>售后率偏高。</b>店铺整体售后率 22.12%，乳饮又是保质期敏感品类。→ 明确发货批次与临期规则，客服话术提前准备好。</li>
+        <li><b>人群范围偏窄。</b>只投「近 30 天未消费客户」会漏掉最近成交的老客。→ 若首两日转化不佳，可加投“全部客户”或补充会员人群。</li>
+        <li><b>叠加冲突。</b>全店当前没有进行中的促销活动（仅有一个 10-13 当天结束的限时折扣），冲突风险低；但正式创建前仍要做一次商品冲突校验，并确认与满赠叠加后价格体系不被击穿。</li>
+        <li><b>预期别拉太高。</b>上表的 GMV 是基于客单与库存的推演，不是承诺。建议每 2 天滚动复盘，效果不及预期时优先砍推广预算，不砍折扣力度（力度一松，清仓就停了）。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 7 口径 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">7</span>
+      <div>
+        <h2>数据口径与限制</h2>
+        <p>方便你判断哪些数字能直接用</p>
+      </div>
+    </div>
+    <div class="card">
+      <ul class="plain">
+        <li>经营与商品指标取自店铺历史汇总数据，统计周期为 <b>2026-09-13 至 2026-10-12</b>；口径为商城内部订单，不含外部订单、CRM 储值订单与付费会员卡订单。</li>
+        <li>商品分组销量按分组口径统计；品类历史取自“商品分析”的二级类目数据（冲饮乳品）。</li>
+        <li>上一个双十一（2025-11-01 至 11-11）商城支付人数为 0、实收为空，<b>无同比参考</b>，折扣力度由库存与历史最好月销推导。</li>
+        <li>参与商品成本价字段为空，无法测算毛利，表中只列 GMV 与让利额。</li>
+        <li>GMV、让利与库存消耗为按均价与库存的估算，需按实际投放效果滚动修正。</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    连锁零售旗舰版123 · 双十一乳品饮料限时折扣方案 · 数据截至 2026-10-12<br>
+    方案中的价格、库存与活动配置均来自店铺实际数据；估算类数字已标注假设，落地前请复核核价、分组与商品状态。
+  </footer>
+</div>
+
+</body>
+</html>

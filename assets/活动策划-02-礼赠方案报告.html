@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>双十一食品饮料礼赠方案 · 连锁零售旗舰版123</title>
+<style>
+  :root{
+    --red:#a31621;
+    --red-deep:#73101a;
+    --red-soft:#f7e9e6;
+    --gold:#bd9450;
+    --gold-soft:#f4ead6;
+    --cream:#faf7f2;
+    --ink:#241f1c;
+    --ink-2:#6a5d54;
+    --ink-3:#9b8d82;
+    --line:#e8dfd3;
+    --ok:#2f7d4f;
+    --warn:#b76b12;
+    --danger:#b3352c;
+    --card:#ffffff;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(60,40,20,.05), 0 8px 24px -12px rgba(60,40,20,.18);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--cream);color:var(--ink);
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",system-ui,-apple-system,sans-serif;
+    line-height:1.7;-webkit-font-smoothing:antialiased;
+    font-size:15px;
+  }
+  a{color:inherit}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+  /* ---------- Nav ---------- */
+  .nav{
+    position:sticky;top:0;z-index:50;background:rgba(250,247,242,.92);
+    backdrop-filter:saturate(1.4) blur(8px);border-bottom:1px solid var(--line);
+  }
+  .nav-inner{max-width:1080px;margin:0 auto;padding:10px 20px;display:flex;gap:6px;overflow-x:auto}
+  .nav-inner a{
+    flex:0 0 auto;text-decoration:none;font-size:13px;color:var(--ink-2);
+    padding:6px 12px;border-radius:999px;border:1px solid transparent;white-space:nowrap;
+  }
+  .nav-inner a:hover{background:var(--red-soft);color:var(--red);border-color:#eecdc7}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:
+      radial-gradient(120% 140% at 92% -20%, rgba(189,148,80,.35) 0%, rgba(189,148,80,0) 55%),
+      linear-gradient(160deg,#8a121c 0%,#a31621 48%,#5f0d15 100%);
+    color:#fff;padding:44px 0 40px;position:relative;overflow:hidden;
+  }
+  .hero::after{
+    content:"";position:absolute;inset:auto -60px -120px auto;width:340px;height:340px;
+    background:radial-gradient(circle,rgba(255,255,255,.10),transparent 62%);
+  }
+  .eyebrow{
+    display:inline-block;font-size:12px;letter-spacing:.16em;color:#f0d9a9;
+    border:1px solid rgba(240,217,169,.45);border-radius:999px;padding:4px 12px;margin-bottom:16px;
+  }
+  .hero h1{margin:0;font-size:clamp(30px,5vw,46px);letter-spacing:.06em;font-weight:800;line-height:1.2}
+  .hero h1 span{color:#f0c978}
+  .hero .sub{margin:12px 0 0;color:#f2ddd4;font-size:15px}
+  .hero .meta{margin-top:20px;display:flex;flex-wrap:wrap;gap:10px}
+  .hero .meta span{
+    font-size:12.5px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);
+    padding:5px 12px;border-radius:999px;color:#fbece6;
+  }
+  .verdict{margin-top:26px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .verdict div{
+    background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);
+    border-radius:12px;padding:14px 16px;
+  }
+  .verdict b{display:block;font-size:12px;color:#f0c978;letter-spacing:.08em;margin-bottom:6px;font-weight:700}
+  .verdict p{margin:0;font-size:13.5px;color:#fdeee9}
+
+  /* ---------- KPI ---------- */
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:-26px 0 0;position:relative;z-index:5}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 16px 14px;box-shadow:var(--shadow)}
+  .kpi .k{font-size:12px;color:var(--ink-3);letter-spacing:.04em}
+  .kpi .v{font-size:24px;font-weight:800;margin:6px 0 2px;color:var(--red-deep);font-variant-numeric:tabular-nums}
+  .kpi .v small{font-size:13px;font-weight:600;color:var(--ink-2);margin-left:2px}
+  .kpi .d{font-size:12px;color:var(--ink-2)}
+
+  /* ---------- Sections ---------- */
+  section{padding:44px 0 8px}
+  .sec-head{display:flex;align-items:baseline;gap:12px;border-bottom:2px solid var(--ink);padding-bottom:10px;margin-bottom:22px}
+  .sec-num{
+    font-size:13px;font-weight:800;color:#fff;background:var(--red);border-radius:6px;
+    width:26px;height:26px;display:grid;place-items:center;flex:0 0 auto;
+  }
+  .sec-head h2{margin:0;font-size:20px;letter-spacing:.02em}
+  .sec-head .note{margin-left:auto;font-size:12px;color:var(--ink-3)}
+  h3{font-size:15.5px;margin:26px 0 12px;letter-spacing:.02em}
+  h3::before{content:"";display:inline-block;width:4px;height:14px;background:var(--gold);border-radius:2px;margin-right:8px;vertical-align:-1px}
+  .lead{color:var(--ink-2);font-size:14px;margin:0 0 14px}
+
+  /* ---------- Cards / Grids ---------- */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+  .card h4{margin:0 0 10px;font-size:15px;display:flex;align-items:center;gap:8px}
+  .tag{font-size:11.5px;padding:2px 9px;border-radius:999px;font-weight:700;letter-spacing:.03em}
+  .tag.family{background:#e8f1e9;color:#2f7d4f}
+  .tag.visit{background:#fdf0dd;color:#b76b12}
+  .tag.biz{background:#eae7f3;color:#5a4a8f}
+
+  /* ---------- Tables ---------- */
+  .tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);box-shadow:var(--shadow)}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:560px}
+  th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+  thead th{background:#f6f1e8;color:var(--ink-2);font-weight:700;font-size:12.5px;letter-spacing:.03em}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:#fcfaf6}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .pos{color:var(--ok);font-weight:700}
+  .neg{color:var(--danger);font-weight:700}
+  .muted{color:var(--ink-3)}
+  .tbl-cap{font-size:12px;color:var(--ink-3);margin:8px 2px 0}
+
+  /* ---------- Bars ---------- */
+  .bars{display:grid;gap:10px;margin-top:6px}
+  .bar-row{display:grid;grid-template-columns:96px 1fr 64px;align-items:center;gap:12px;font-size:13px}
+  .bar-track{background:#f0e9de;border-radius:6px;height:16px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--red) 0%,#c53b45 100%)}
+  .bar-fill.g{background:linear-gradient(90deg,var(--gold) 0%,#d9b578 100%)}
+  .bar-row .val{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;color:var(--ink-2)}
+
+  /* ---------- Gift box ---------- */
+  .box-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px}
+  .box-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .box-name{font-size:16px;font-weight:800}
+  .box-price{text-align:right}
+  .box-price .p{font-size:24px;font-weight:800;color:var(--red-deep);font-variant-numeric:tabular-nums}
+  .box-price .p small{font-size:13px;font-weight:600}
+  .box-price .c{font-size:11.5px;color:var(--ink-3)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-size:12px;background:#f6f1e8;border:1px solid var(--line);border-radius:8px;padding:4px 9px;color:var(--ink-2)}
+  .mini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;border-top:1px dashed var(--line);padding-top:12px}
+  .mini div{text-align:center}
+  .mini .mk{font-size:11px;color:var(--ink-3)}
+  .mini .mv{font-size:14px;font-weight:800;font-variant-numeric:tabular-nums}
+  .pack{font-size:12.5px;color:var(--ink-2);background:#fbf7ef;border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:9px 12px}
+
+  /* ---------- Timeline ---------- */
+  .tl{position:relative;margin:10px 0 0;padding-left:26px}
+  .tl::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:linear-gradient(180deg,var(--red),var(--gold))}
+  .tl-item{position:relative;padding:0 0 20px 0}
+  .tl-item::before{content:"";position:absolute;left:-25px;top:5px;width:12px;height:12px;border-radius:50%;background:#fff;border:2.5px solid var(--red)}
+  .tl-item.gold::before{border-color:var(--gold)}
+  .tl-item.final::before{border-color:var(--ink);background:var(--ink)}
+  .tl-date{font-size:12px;font-weight:800;color:var(--red);letter-spacing:.04em}
+  .tl-item.gold .tl-date{color:var(--gold)}
+  .tl-item.final .tl-date{color:var(--ink)}
+  .tl-title{font-size:14.5px;font-weight:700;margin:2px 0 3px}
+  .tl-desc{font-size:13px;color:var(--ink-2)}
+
+  /* ---------- Risk ---------- */
+  .risk{display:grid;gap:12px}
+  .risk-item{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--warn);border-radius:10px;padding:14px 16px}
+  .risk-item.high{border-left-color:var(--danger)}
+  .risk-item h4{margin:0 0 6px;font-size:14px;display:flex;align-items:center;gap:8px}
+  .risk-item p{margin:0;font-size:13px;color:var(--ink-2)}
+  .lv{font-size:11px;font-weight:800;padding:2px 8px;border-radius:6px;letter-spacing:.04em}
+  .lv.h{background:#fbe6e3;color:var(--danger)}
+  .lv.m{background:#fdf0dd;color:var(--warn)}
+
+  /* ---------- Checklist ---------- */
+  .check{display:grid;gap:10px;counter-reset:c}
+  .check label{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 16px;cursor:pointer}
+  .check label:hover{border-color:#dcc9a8}
+  .check input{margin-top:3px;width:17px;height:17px;accent-color:var(--red);flex:0 0 auto}
+  .check b{font-size:13.5px;font-weight:700}
+  .check p{margin:2px 0 0;font-size:12.5px;color:var(--ink-2)}
+  .check .who{font-size:11.5px;color:var(--ink-3);margin-top:4px;display:block}
+
+  /* ---------- Footer ---------- */
+  footer{margin-top:48px;border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);font-size:12px}
+  footer p{margin:4px 0}
+  .callout{background:var(--red-soft);border:1px solid #eecdc7;border-radius:var(--radius);padding:16px 18px;font-size:13.5px;color:#7a1a16}
+  .callout b{color:var(--red-deep)}
+
+  @media (max-width:900px){
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .verdict{grid-template-columns:1fr}
+    .grid2,.grid3{grid-template-columns:1fr}
+  }
+  @media (max-width:560px){
+    .kpis{grid-template-columns:1fr}
+    .bar-row{grid-template-columns:78px 1fr 56px}
+    .hero{padding:34px 0 32px}
+  }
+  @media print{
+    .nav{display:none}
+    body{background:#fff}
+    .card,.box-card,.tbl-wrap,.kpi{box-shadow:none}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#overview">方案概览</a>
+    <a href="#review">相似节点复盘</a>
+    <a href="#catalog">商品与库存</a>
+    <a href="#giftbox">礼盒设计</a>
+    <a href="#timeline">推广时间表</a>
+    <a href="#supply">库存与配送</a>
+    <a href="#budget">预算与收益</a>
+    <a href="#risk">风险与行动</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">连锁零售旗舰版123 · 双十一礼赠企划</span>
+    <h1>礼遇好食光<span>·</span>双十一食品饮料礼赠方案</h1>
+    <p class="sub">围绕家庭分享、走亲访友、商务赠礼三类场景，用三档礼盒承接双十一流量。</p>
+    <div class="meta">
+      <span>活动节点 2026-11-11（周三）</span>
+      <span>推广预算 2.2 万元</span>
+      <span>数据截至 2026-10-12</span>
+      <span>主体：连锁零售旗舰版123</span>
+    </div>
+    <div class="verdict">
+      <div><b>主推机制</b><p>满赠是历史最优机制：ROI 4.45、客单价 ¥155.6、连带率 2.0</p></div>
+      <div><b>主推价位</b><p>对齐 ¥150–160 有效价位带，设 ¥99 / ¥199 / ¥359 三档礼盒</p></div>
+      <div><b>先补的课</b><p>礼盒缺乏成本价与重量体积，售后率偏高，需在开卖前补齐</p></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="kpis">
+    <div class="kpi"><div class="k">建议推广预算</div><div class="v">¥2.2<small>万</small></div><div class="d">包装+投放+补贴+物流</div></div>
+    <div class="kpi"><div class="k">礼盒目标（中性）</div><div class="v">160<small>套</small></div><div class="d">保守 80 / 乐观 220</div></div>
+    <div class="kpi"><div class="k">预估礼盒销售额</div><div class="v">¥3.28<small>万</small></div><div class="d">中性情景，均价 ¥205</div></div>
+    <div class="kpi"><div class="k">现有礼盒库存</div><div class="v">489<small>件</small></div><div class="d">五丰礼盒（近30天销 11）</div></div>
+    <div class="kpi"><div class="k">类目最高售后率</div><div class="v">28.6<small>%</small></div><div class="d">进口食品（礼盒所属类目）</div></div>
+  </div>
+</div>
+
+<!-- ================= 1 概览 ================= -->
+<section id="overview">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">1</span>
+      <h2>活动主题与目标顾客</h2>
+      <span class="note">主题 / 人群</span>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h4>🎯 活动主题</h4>
+        <p style="margin:0 0 10px;font-size:15px;font-weight:800;color:var(--red-deep)">「礼遇好食光」双十一食品饮料礼赠专场</p>
+        <p class="lead" style="margin:0">用「一盒到位」的食品礼盒替代零散单品，把双十一的囤货流量转成礼赠订单。主题主打两点：<b>好食材、送得体面</b>；<b>满赠加码、越买越划算</b>。</p>
+      </div>
+      <div class="card">
+        <h4>💰 预算与目标</h4>
+        <ul style="margin:0;padding-left:18px;font-size:13.5px;color:var(--ink-2)">
+          <li>推广预算：<b>¥22,000</b>（区间 1–5 万的中低位，先用一场验证）</li>
+          <li>礼盒销量目标：保守 80 套 / 中性 160 套 / 乐观 220 套</li>
+          <li>中性情景礼盒销售额约 <b>¥3.28 万</b>，估算毛利约 <b>¥1.74 万</b></li>
+          <li>打平推广费约需 <b>200 套</b>左右，建议按乐观目标倒排备货</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>目标顾客</h3>
+    <div class="grid3">
+      <div class="card">
+        <h4><span class="tag family">家庭分享</span></h4>
+        <p class="lead" style="margin:0">25–40 岁家庭主理人，双十一习惯囤口粮。<br>关注点：分量足、保质期长、性价比。</p>
+        <p class="lead" style="margin:10px 0 0;color:var(--ink-3);font-size:12.5px">承接类目：休闲零食（复购 40%）、冲饮乳品（复购 66.7%）</p>
+      </div>
+      <div class="card">
+        <h4><span class="tag visit">走亲访友</span></h4>
+        <p class="lead" style="margin:0">有登门、探访需求的职场人群与中年客群。<br>关注点：包装体面、拿得出手、不挑口味。</p>
+        <p class="lead" style="margin:10px 0 0;color:var(--ink-3);font-size:12.5px">承接类目：酒类 + 进口食品组合</p>
+      </div>
+      <div class="card">
+        <h4><span class="tag biz">商务赠礼</span></h4>
+        <p class="lead" style="margin:0">中小企业采购、商务人情往来。<br>关注点：可定制、可开发票、能批量下单。</p>
+        <p class="lead" style="margin:10px 0 0;color:var(--ink-3);font-size:12.5px">承接类目：酒类 + 进口食品礼盒，走企业内购</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 2 复盘 ================= -->
+<section id="review">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">2</span>
+      <h2>相似节点复盘：什么卖得动，哪里容易出问题</h2>
+      <span class="note">近 90 / 180 天</span>
+    </div>
+
+    <h3>2.1 有效的活动机制与价位</h3>
+    <p class="lead">同类节点里，<b>满赠</b>是唯一跑出规模效应的机制，客单价也最高；限时折扣能走量但客单偏低；换购、套装、拼团基本没跑起来。</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>活动类型</th><th class="num">访客量</th><th class="num">下单人数</th><th class="num">支付单数</th><th class="num">ROI</th><th class="num">客单价</th><th class="num">连带率</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>满赠</b></td><td class="num">46</td><td class="num">6</td><td class="num">8</td><td class="num pos">4.45</td><td class="num">¥155.6</td><td class="num">2.0</td></tr>
+          <tr><td>限时折扣</td><td class="num">36</td><td class="num">2</td><td class="num">5</td><td class="num">1.10</td><td class="num">¥53.2</td><td class="num">1.0</td></tr>
+          <tr><td>企业内购</td><td class="num">11</td><td class="num">3</td><td class="num">1</td><td class="num muted">—</td><td class="num">¥99.0</td><td class="num">1.0</td></tr>
+          <tr><td>满减满折</td><td class="num">14</td><td class="num">2</td><td class="num">0</td><td class="num">0</td><td class="num muted">—</td><td class="num">0</td></tr>
+          <tr><td>单品换购</td><td class="num">39</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num muted">—</td><td class="num">0</td></tr>
+          <tr><td>固定套装</td><td class="num">24</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num muted">—</td><td class="num">0</td></tr>
+          <tr><td>拼团</td><td class="num">12</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num muted">—</td><td class="num">0</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tbl-cap">数据口径：店铺促销分析，近 180 天回溯窗口，统计数据截至 2026-10-12。</p>
+
+    <div class="grid2" style="margin-top:20px">
+      <div class="card">
+        <h4>📊 机制取舍结论</h4>
+        <div class="bars">
+          <div class="bar-row"><span>满赠 ROI</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="val">4.45</span></div>
+          <div class="bar-row"><span>限时折扣 ROI</span><div class="bar-track"><div class="bar-fill" style="width:25%"></div></div><span class="val">1.10</span></div>
+          <div class="bar-row"><span>满赠客单价</span><div class="bar-track"><div class="bar-fill g" style="width:100%"></div></div><span class="val">¥155.6</span></div>
+          <div class="bar-row"><span>限时折扣客单价</span><div class="bar-track"><div class="bar-fill g" style="width:34%"></div></div><span class="val">¥53.2</span></div>
+        </div>
+        <p class="lead" style="margin:14px 0 0;font-size:13px">所以双十一的组合建议是：<b>礼盒做满赠门槛载体，限时折扣做单品引流</b>，不要指望换购/拼团扛量。</p>
+      </div>
+      <div class="card">
+        <h4>🧭 有效价位带</h4>
+        <p class="lead" style="margin:0">跑出成绩的客单集中在 <b>¥150–160</b>；全店近 30 天客单价 <b>¥277.88</b>。三档礼盒正是围绕「150 走量、280 提客单、360 拉利润」布点，避免只在低价位内卷。</p>
+        <p class="lead" style="margin:12px 0 0;font-size:13px">历史走量的节点活动也集中在 <b>情人节/七夕、教师节、年货节、夏日鲜奶</b> 等「有送礼理由」的时间点，说明<b>给一个送礼场景，比单纯打折更能带动食品礼盒</b>。</p>
+      </div>
+    </div>
+
+    <h3>2.2 卖得好的食品类目</h3>
+    <p class="lead">近 90 天，<b>进口食品</b>是食品饮料里唯一有量的类目（84 件、40 人支付）；<b>冲饮乳品</b>与<b>营养保健</b>复购最扎实，是做礼盒组合的可靠底座。</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>二级类目</th><th class="num">支付人数</th><th class="num">支付件数</th><th class="num">实收金额</th><th class="num">复购率</th><th class="num">售后率</th><th class="num">售后金额</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>进口食品</b>（礼盒所在类目）</td><td class="num">40</td><td class="num">84</td><td class="num">¥37.13</td><td class="num">42.5%</td><td class="num neg">28.6%</td><td class="num">¥27.01</td></tr>
+          <tr><td>冲饮乳品</td><td class="num">9</td><td class="num">23</td><td class="num">¥34.52</td><td class="num pos">66.7%</td><td class="num neg">21.7%</td><td class="num">¥34.50</td></tr>
+          <tr><td>营养保健</td><td class="num">7</td><td class="num">18</td><td class="num">¥0</td><td class="num pos">85.7%</td><td class="num">11.1%</td><td class="num">¥0</td></tr>
+          <tr><td>休闲零食</td><td class="num">5</td><td class="num">9</td><td class="num">¥0</td><td class="num">40.0%</td><td class="num">11.1%</td><td class="num">¥0</td></tr>
+          <tr><td>酒类</td><td class="num">1</td><td class="num">1</td><td class="num">¥0</td><td class="num">0%</td><td class="num">0%</td><td class="num">¥0</td></tr>
+          <tr><td>粮油干货</td><td class="num">1</td><td class="num">1</td><td class="num">¥0</td><td class="num">0%</td><td class="num">0%</td><td class="num">¥0</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tbl-cap">数据口径：店铺商品分析，近 90 天回溯窗口（统计截至 2026-10-12）。</p>
+
+    <h3>2.3 出现过的配送与售后问题</h3>
+    <div class="risk">
+      <div class="risk-item high">
+        <h4>⚠️ 食品类售后率明显偏高<span class="lv h">高</span></h4>
+        <p>进口食品售后率 28.6%、冲饮乳品 21.7%，都远高于可选参照的男鞋（费用低但率也高）之外的常规水平。进口食品近 90 天售后金额 ¥27.01，几乎吃掉类目实收的七成；冲饮乳品售后金额 ¥34.5，接近其全部实收。<b>说明目前食品类退换货处置成本很高，礼盒一旦出问题，一单就是整盒损失。</b></p>
+      </div>
+      <div class="risk-item">
+        <h4>⚠️ 商品资料缺成本价与重量体积<span class="lv h">高</span></h4>
+        <p>在售的「五丰礼盒19999」成本价为 0、重量与体积均为 0。这会导致两个直接后果：<b>一是毛利算不准，二是按重量计费的运费模板会算错</b>，礼盒越大越容易亏运费。</p>
+      </div>
+      <div class="risk-item">
+        <h4>⚠️ 液体、酒类破损与渗漏风险<span class="lv m">中</span></h4>
+        <p>组合里含玻璃瓶装白酒与鲜奶类液体，双十一快递量大、分拣粗暴，历史上家具、服饰类都有售后记录。礼盒装液体必须做防碎与防漏加固。</p>
+      </div>
+      <div class="risk-item">
+        <h4>⚠️ 保质期与成分纠纷<span class="lv m">中</span></h4>
+        <p>礼盒会混装多品类食品，保质期长短不一。若不按其中最短保质期标注，极易在节后集中触发「临近保质期」类售后。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 3 商品与库存 ================= -->
+<section id="catalog">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">3</span>
+      <h2>可售商品与库存盘点</h2>
+      <span class="note">实时库存</span>
+    </div>
+    <p class="lead">用来组礼盒的现成货不多，能真正打样的只有一款礼盒 + 酒 + 冲饮。库存结构偏薄，需要提前补货。</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>商品</th><th>类目</th><th class="num">售价</th><th class="num">可售库存</th><th class="num">近30天销量</th><th>状态与备注</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>五丰礼盒19999</b></td><td>进口食品</td><td class="num">¥19.8</td><td class="num">489</td><td class="num">11</td><td>在售，唯一现成礼盒；成本价/重量/体积缺失</td></tr>
+          <tr><td>九江生肖酒测试（4 个链接）</td><td>酒类</td><td class="num">¥99.99</td><td class="num">592</td><td class="num">0</td><td>在售，库存充足，最适合做赠礼主品</td></tr>
+          <tr><td>九江酒测试</td><td>酒类</td><td class="num">¥100</td><td class="num">400</td><td class="num">0</td><td>在售，可作酒类备选</td></tr>
+          <tr><td>原味咖啡</td><td>冲饮乳品</td><td class="num">¥20</td><td class="num">95</td><td class="num">5</td><td>在售，适合搭礼盒</td></tr>
+          <tr><td>光明优倍有机鲜牛奶 950mL</td><td>冲饮乳品</td><td class="num">¥19.9</td><td class="num neg">10</td><td class="num">0</td><td class="muted">库存仅 10，做礼盒需先补货或改预售</td></tr>
+          <tr><td>包子</td><td>食品</td><td class="num">¥2</td><td class="num">96</td><td class="num">4</td><td class="muted">单价过低，不适合入礼盒</td></tr>
+          <tr><td>【套装1】油品套装</td><td>粮油</td><td class="num">¥200</td><td class="num">19</td><td class="num">1</td><td class="muted">库存偏少，可作高价备选</td></tr>
+          <tr><td>满赠赠品 A / B</td><td>—</td><td class="num">¥88</td><td class="num neg">0 / 8</td><td class="num">0 / 2</td><td class="muted">赠品库存见底，做满赠需补</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tbl-cap">数据口径：商品列表实时库存，销量为近 30 天口径（截至 2026-10-12）。</p>
+
+    <div class="callout" style="margin-top:18px">
+      <b>盘点结论：</b>当前可直接支撑的是「五丰礼盒 + 九江酒 + 原味咖啡」这条主线；鲜奶库存只有 10 件、赠品库存见底，这两项必须在 <b>10 月底前补货或改为按单采购</b>，否则礼盒发不出、满赠也送不动。
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4 礼盒设计 ================= -->
+<section id="giftbox">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">4</span>
+      <h2>三场景礼盒设计</h2>
+      <span class="note">成本为方案估算</span>
+    </div>
+    <p class="lead">按「家庭分享 / 走亲访友 / 商务赠礼」三档布点。成本按食品饮料常规采购成本约为标价 55%、并按包装材料分档估算，<b>最终需以实际采购价为准</b>（现有礼盒成本价尚未录入）。</p>
+
+    <div class="grid3">
+      <div class="box-card">
+        <div class="box-top">
+          <div>
+            <div class="box-name">轻享装</div>
+            <span class="tag family">家庭分享</span>
+          </div>
+          <div class="box-price"><div class="p">¥99</div><div class="c">估算成本 ¥52</div></div>
+        </div>
+        <div class="chips">
+          <span class="chip">五丰礼盒 ×2</span>
+          <span class="chip">光明有机鲜牛奶 ×1</span>
+          <span class="chip">原味咖啡 ×1</span>
+        </div>
+        <div class="mini">
+          <div><div class="mk">估算毛利</div><div class="mv pos">47%</div></div>
+          <div><div class="mk">建议备货</div><div class="mv">80 套</div></div>
+          <div><div class="mk">角色</div><div class="mv" style="font-size:12px">走量引流</div></div>
+        </div>
+        <div class="pack">包装：牛皮纸手提礼盒 + 内衬分格，外贴「好食光」腰封。控制在 3 件以内，避免超重。</div>
+      </div>
+
+      <div class="box-card">
+        <div class="box-top">
+          <div>
+            <div class="box-name">心意装</div>
+            <span class="tag visit">走亲访友</span>
+          </div>
+          <div class="box-price"><div class="p">¥199</div><div class="c">估算成本 ¥105</div></div>
+        </div>
+        <div class="chips">
+          <span class="chip">九江生肖酒 ×1</span>
+          <span class="chip">五丰礼盒 ×2</span>
+          <span class="chip">原味咖啡 ×1</span>
+          <span class="chip">干脆面包丁 ×1</span>
+        </div>
+        <div class="mini">
+          <div><div class="mk">估算毛利</div><div class="mv pos">47%</div></div>
+          <div><div class="mk">建议备货</div><div class="mv">100 套</div></div>
+          <div><div class="mk">角色</div><div class="mv" style="font-size:12px">主力款</div></div>
+        </div>
+        <div class="pack">包装：深红天地盖礼盒 + 白酒防碎卡槽 + 烫金封条 + 可写祝福卡。酒瓶单独加珍珠棉护套。</div>
+      </div>
+
+      <div class="box-card">
+        <div class="box-top">
+          <div>
+            <div class="box-name">尊礼装</div>
+            <span class="tag biz">商务赠礼</span>
+          </div>
+          <div class="box-price"><div class="p">¥359</div><div class="c">估算成本 ¥187</div></div>
+        </div>
+        <div class="chips">
+          <span class="chip">九江生肖酒 ×2</span>
+          <span class="chip">五丰礼盒 ×2</span>
+          <span class="chip">原味咖啡 ×1</span>
+        </div>
+        <div class="mini">
+          <div><div class="mk">估算毛利</div><div class="mv pos">48%</div></div>
+          <div><div class="mk">建议备货</div><div class="mv">40 套</div></div>
+          <div><div class="mk">角色</div><div class="mv" style="font-size:12px">提客单/送礼</div></div>
+        </div>
+        <div class="pack">包装：皮质提手礼箱 + 绒布内衬 + 品牌烫印 + 支持企业抬头定制卡片与批量开票。</div>
+      </div>
+    </div>
+
+    <div class="tbl-wrap" style="margin-top:20px">
+      <table>
+        <thead>
+          <tr><th>档位</th><th>目标场景</th><th class="num">建议售价</th><th class="num">估算成本</th><th class="num">估算毛利率</th><th class="num">建议备货</th><th>包装投入/套</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>轻享装</b></td><td>家庭分享</td><td class="num">¥99</td><td class="num">¥52</td><td class="num pos">约 47%</td><td class="num">80 套</td><td class="num">约 ¥8</td></tr>
+          <tr><td><b>心意装</b></td><td>走亲访友</td><td class="num">¥199</td><td class="num">¥105</td><td class="num pos">约 47%</td><td class="num">100 套</td><td class="num">约 ¥15</td></tr>
+          <tr><td><b>尊礼装</b></td><td>商务赠礼</td><td class="num">¥359</td><td class="num">¥187</td><td class="num pos">约 48%</td><td class="num">40 套</td><td class="num">约 ¥35</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tbl-cap">合计首批备货 220 套，礼盒备货成本约 ¥2.3 万（不含推广预算）。成本与毛利均为方案估算，需用实际采购价复核。</p>
+  </div>
+</section>
+
+<!-- ================= 5 时间表 ================= -->
+<section id="timeline">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">5</span>
+      <h2>推广时间表</h2>
+      <span class="note">10/13 – 11/30</span>
+    </div>
+
+    <div class="tl">
+      <div class="tl-item">
+        <div class="tl-date">10/13 – 10/19｜筹备期</div>
+        <div class="tl-title">定档、算账、打样</div>
+        <div class="tl-desc">确定三档礼盒与售价；补齐礼盒成本价、重量、体积并重算运费模板；礼盒包装打样定版；搭建预售页与详情页（标注含酒提示、保质期、赔付规则）。</div>
+      </div>
+      <div class="tl-item gold">
+        <div class="tl-date">10/20 – 10/31｜预售期</div>
+        <div class="tl-title">预售锁客 + 满赠上线</div>
+        <div class="tl-desc">开启定金预售/定金膨胀；发放会员专属券（营养保健、冲饮乳品复购客优先）；社群与导购预热；补齐鲜奶、赠品库存。</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">11/01 – 11/03｜开门红</div>
+        <div class="tl-title">首波爆发</div>
+        <div class="tl-desc">满赠 + 限时折扣同步上线；主推心意装；首波素材投放，测试点击与转化。</div>
+      </div>
+      <div class="tl-item gold">
+        <div class="tl-date">11/04 – 11/09｜蓄水期</div>
+        <div class="tl-title">加购收藏、蓄水蓄券</div>
+        <div class="tl-desc">用加购未购人群做二次触达；发大额券；直播预告；按首波动销调整备货。</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">11/10 – 11/11｜高潮期</div>
+        <div class="tl-title">全力冲刺</div>
+        <div class="tl-desc">满赠叠加限时折扣（注意防价格倒挂）；直播带货；活动短链与海报全渠道投放；尊礼装主攻企业内购。</div>
+      </div>
+      <div class="tl-item gold">
+        <div class="tl-date">11/12 – 11/14｜返场期</div>
+        <div class="tl-title">返场 + 催付</div>
+        <div class="tl-desc">小返场消化尾货；未付款订单催付；同步清点礼盒余量与耗材。</div>
+      </div>
+      <div class="tl-item final">
+        <div class="tl-date">11/15｜发货截止</div>
+        <div class="tl-title">礼盒订单发货截止日</div>
+        <div class="tl-desc">双十一后物流压力最大，礼盒需防碎加固、白酒需符合快递限制。建议在详情页与客服话术里明确「11/15 前下单优先发出」，避免延误投诉。</div>
+      </div>
+      <div class="tl-item final">
+        <div class="tl-date">11/16 – 11/30｜节后清库</div>
+        <div class="tl-title">尾货处理</div>
+        <div class="tl-desc">未售礼盒拆零按单品售卖；或重组为「年末礼包」衔接元旦/年货节；剩余零散商品转作满赠赠品消化。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 6 库存配送 ================= -->
+<section id="supply">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">6</span>
+      <h2>库存与配送安排</h2>
+      <span class="note">备货 / 履约</span>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h4>📦 备货计划</h4>
+        <ul style="margin:0;padding-left:18px;font-size:13.5px;color:var(--ink-2)">
+          <li>五丰礼盒：现有 489 件，首批 220 套约需 440 件，<b>够用但无冗余</b>，建议按乐观目标补到 600 件</li>
+          <li>九江生肖酒：现有 592 瓶，心意装 + 尊礼装约需 180 瓶，<b>库存充足</b></li>
+          <li>原味咖啡：现有 95 件，约需 220 件，<b>需补货约 130 件</b></li>
+          <li>光明有机鲜牛奶：仅 10 件，<b>必须补货或改为按单采购</b></li>
+          <li>满赠赠品：A 库存为 0，<b>需立即补货</b></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>🚚 配送安排</h4>
+        <ul style="margin:0;padding-left:18px;font-size:13.5px;color:var(--ink-2)">
+          <li>补录礼盒重量/体积后<b>重算运费模板</b>，避免按重计费失真亏运费</li>
+          <li>白酒玻璃瓶：珍珠棉护套 + 防碎卡槽，建议<b>保价</b>，并核对可发区域（部分区域限制酒精寄递）</li>
+          <li>含鲜奶礼盒：加冰袋/防潮，优先同城或次日达</li>
+          <li>礼盒统一<b>先入礼盒仓再发</b>，避免分单导致到货不齐</li>
+          <li>设置发货截止 11/15，并在详情页公示</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 7 预算与收益 ================= -->
+<section id="budget">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">7</span>
+      <h2>预算与收益估算</h2>
+      <span class="note">估算</span>
+    </div>
+
+    <h3>7.1 推广预算（¥22,000）</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>项目</th><th class="num">金额</th><th class="num">占比</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>平台 / 达人 / 直播投放</td><td class="num">¥8,000</td><td class="num">36%</td><td>满赠主推位、社群裂变、1 场直播</td></tr>
+          <tr><td>礼盒包装定制</td><td class="num">¥5,000</td><td class="num">23%</td><td>三档礼盒外盒 + 内衬 + 封套，首批 220 套</td></tr>
+          <tr><td>优惠券 / 赠品补贴</td><td class="num">¥4,000</td><td class="num">18%</td><td>预售定金膨胀、满赠赠品采购</td></tr>
+          <tr><td>物流耗材与防碎包装</td><td class="num">¥3,000</td><td class="num">14%</td><td>白酒防碎、礼盒加固、冰袋、保价</td></tr>
+          <tr><td>内容与设计</td><td class="num">¥2,000</td><td class="num">9%</td><td>主图、详情页、短视频素材</td></tr>
+          <tr><td><b>合计</b></td><td class="num"><b>¥22,000</b></td><td class="num"><b>100%</b></td><td>礼盒采购成本另计（约 ¥2.3 万）</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>7.2 收益情景估算</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>情景</th><th class="num">礼盒销量</th><th class="num">均价</th><th class="num">礼盒销售额</th><th class="num">估算毛利（约47%）</th><th class="num">推广预算</th><th class="num">礼盒口径净额</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>保守</td><td class="num">80 套</td><td class="num">¥195</td><td class="num">¥15,600</td><td class="num">¥7,300</td><td class="num">¥22,000</td><td class="num neg">−¥14,700</td></tr>
+          <tr><td><b>中性</b></td><td class="num"><b>160 套</b></td><td class="num"><b>¥205</b></td><td class="num"><b>¥32,800</b></td><td class="num"><b>¥17,400</b></td><td class="num">¥22,000</td><td class="num neg"><b>−¥4,600</b></td></tr>
+          <tr><td>乐观</td><td class="num">220 套</td><td class="num">¥215</td><td class="num">¥47,300</td><td class="num">¥25,100</td><td class="num">¥22,000</td><td class="num pos">+¥3,100</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tbl-cap">测算说明：毛利率取 47% 估算；未计入连带销售收益。满赠机制历史连带率 2.0，礼盒买家大多会顺带加购其他商品，实际全店贡献会高于上表。打平推广费约需 <b>200 套</b>。</p>
+
+    <div class="callout" style="margin-top:18px">
+      <b>怎么看待这笔账：</b>礼盒单独跑很难马上覆盖推广费，它真正的价值在「<b>拉新客 + 提客单 + 带复购</b>」——营养保健复购率 85.7%、冲饮乳品 66.7%。建议把目标定在乐观档（220 套），并把新客留存与复购作为第二考核指标，而不是只看礼盒这一单的盈亏。
+    </div>
+  </div>
+</section>
+
+<!-- ================= 8 风险与行动 ================= -->
+<section id="risk">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">8</span>
+      <h2>风险提醒与行动清单</h2>
+      <span class="note">开卖前必做</span>
+    </div>
+
+    <div class="risk" style="margin-bottom:24px">
+      <div class="risk-item high"><h4>售后率偏高<span class="lv h">高</span></h4><p>礼盒所属的进口食品类目售后率 28.6%，是最需要盯的风险。详情页必须写清保质期、储存方式、破损赔付规则。</p></div>
+      <div class="risk-item high"><h4>成本与运费算不准<span class="lv h">高</span></h4><p>礼盒成本价为 0、重量体积为 0，直接影响定价与运费。开卖前必须补齐。</p></div>
+      <div class="risk-item"><h4>库存不足导致超卖<span class="lv m">中</span></h4><p>鲜奶仅 10 件、赠品为 0，礼盒 489 件也无冗余。需先补货再开预售。</p></div>
+      <div class="risk-item"><h4>物流爆仓延误<span class="lv m">中</span></h4><p>双十一后发货压力大，需设 11/15 发货截止并提前公示，减少延误投诉。</p></div>
+      <div class="risk-item"><h4>白酒配送合规<span class="lv m">中</span></h4><p>酒精类寄递有限制，需核对可发区域，并在页面标注不含禁发地区。</p></div>
+      <div class="risk-item"><h4>满赠门槛价格倒挂<span class="lv m">中</span></h4><p>若满赠门槛低于礼盒售价，会被套利。门槛需高于轻享装售价。</p></div>
+    </div>
+
+    <h3>开卖前行动清单</h3>
+    <div class="check">
+      <label><input type="checkbox"><span><b>补齐礼盒成本价、重量、体积</b><p>重算运费模板，否则按重计费会失真、毛利也算不准。</p><span class="who">建议责任人：商品运营｜截止 10/19</span></span></label>
+      <label><input type="checkbox"><span><b>补货：鲜奶、原味咖啡、满赠赠品</b><p>鲜奶仅 10 件、赠品 A 为 0，不补货礼盒发不出、满赠送不动。</p><span class="who">建议责任人：采购/仓储｜截止 10/25</span></span></label>
+      <label><input type="checkbox"><span><b>礼盒包装打样定版</b><p>三档礼盒的外盒、内衬、白酒防碎结构先出样，确认后再批量下单。</p><span class="who">建议责任人：设计/供应商｜截止 10/22</span></span></label>
+      <label><input type="checkbox"><span><b>详情页补齐保质期与赔付规则</b><p>按礼盒内最短保质期标注；写清破损、渗漏的赔付与补寄规则。</p><span class="who">建议责任人：内容运营｜截止 10/25</span></span></label>
+      <label><input type="checkbox"><span><b>配置满赠门槛与赠品</b><p>门槛高于轻享装售价（¥99），避免被套利；赠品库存要够。</p><span class="who">建议责任人：营销运营｜截止 10/28</span></span></label>
+      <label><input type="checkbox"><span><b>预售页与活动短链、海报上线</b><p>提前 10 天挂出预售，锁定双十一流量。</p><span class="who">建议责任人：营销/设计｜截止 10/31</span></span></label>
+      <label><input type="checkbox"><span><b>核对白酒可发区域与保价方案</b><p>确认快递对酒精类目的限制，避免下单后无法发货。</p><span class="who">建议责任人：客服/物流｜截止 10/31</span></span></label>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><b>数据口径：</b>店铺经营与商品数据截至 2026-10-12；近 30 天为 2026-09-13～10-12，类目与活动数据为近 90 / 180 天回溯窗口。</p>
+    <p><b>估算说明：</b>礼盒成本、销量目标、预算分配与收益测算为方案估算，非后台实际值；实际执行前请以采购价与真实库存复核。海外/含酒商品的寄递需以当地快递政策为准。</p>
+    <p>本方案由星元基于「连锁零售旗舰版123」店铺数据生成，供内部经营决策参考。</p>
+  </div>
+</footer>
+
+</body>
+</html>
