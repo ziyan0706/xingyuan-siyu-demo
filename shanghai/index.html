@@ -628,7 +628,7 @@ body.play .page.pptpage{padding:0}
 <body class="play">
 <div class="wrap"><div class="page deckpage"><iframe class="psframe" scrolling="no" allowfullscreen></iframe><template><div class="slide car">
   <div class="carhd"><div class="cartitle">星元，已经这样在干活了</div></div>
-  <div class="cwrap"><div class="ctile on" data-i="0"><video class="cvsrc" src="../assets/轮播-1-hd.mp4" playsinline preload="metadata"></video><div class="cnum">01</div></div><div class="ctile" data-i="1"><video class="cvsrc" src="../assets/轮播-2-hd.mp4" playsinline preload="metadata"></video><div class="cnum">02</div></div><div class="ctile" data-i="2"><video class="cvsrc" src="../assets/轮播-3-hd.mp4" playsinline preload="metadata"></video><div class="cnum">03</div></div><div class="ctile" data-i="3"><video class="cvsrc" src="../assets/博主探店成片1.mp4" playsinline preload="metadata"></video><div class="cnum">04</div></div></div>
+  <div class="cwrap"><div class="ctile on" data-i="0"><video class="cvsrc" src="../assets/轮播-1-hd.mp4" playsinline preload="metadata"></video><div class="cnum">01</div></div><div class="ctile" data-i="1"><video class="cvsrc" data-src="../assets/轮播-2-hd.mp4" playsinline preload="none"></video><div class="cnum">02</div></div><div class="ctile" data-i="2"><video class="cvsrc" data-src="../assets/轮播-3-hd.mp4" playsinline preload="none"></video><div class="cnum">03</div></div><div class="ctile" data-i="3"><video class="cvsrc" data-src="../assets/博主探店成片1.mp4" playsinline preload="none"></video><div class="cnum">04</div></div></div>
   <div class="cplay" role="button" tabindex="0" aria-label="播放"><div class="cpbtn">▶</div></div>
   <div class="ft"><span class="pn">01 / 38</span></div>
 </div></template></div><div class="page pptpage"><iframe class="psframe" scrolling="no" allowfullscreen data-srcdoc="&lt;!doctype html&gt;&lt;html lang=&quot;zh-CN&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;style&gt;
@@ -1680,12 +1680,26 @@ body{background:#E9EAF2;font-family:"PingFang SC","Hiragino Sans GB","Microsoft 
         timer = setTimeout(function(){ next(); }, Math.max(2000, (sec + 0.4) * 1000));
       }
       function next(){ if (started) show(cur + 1); }
+      // 懒装载：data-src 只在需要时写入 src，避免开场一次性拉 4 条大视频
+      function ensureSrc(v){
+        if (!v) return v;
+        if (!v.getAttribute('src')) {
+          var d = v.getAttribute('data-src');
+          if (d) { v.setAttribute('preload','auto'); v.setAttribute('src', d); v.load(); }
+        }
+        return v;
+      }
+      function warmNext(i){                        // 播当前条的同时预热下一条，切换不卡
+        var t = tiles[(i + 1) % tiles.length];
+        if (t) ensureSrc(t.querySelector('.cvsrc'));
+      }
       function show(i){
         cur = (i + tiles.length) % tiles.length;   // 取模 → 第 3 条播完自动回到第 1 条
         tiles.forEach(function(t, k){
           t.classList.toggle('on', k === cur);
           var v = t.querySelector('.cvsrc'); if (!v) return;
           if (k === cur) {
+            ensureSrc(v);
             v.muted = false;                       // 依次播放，同一时刻只有一条出声
             try { v.currentTime = 0; } catch (e) {}
             var pr = v.play();
@@ -1699,6 +1713,7 @@ body{background:#E9EAF2;font-family:"PingFang SC","Hiragino Sans GB","Microsoft 
           }
           t.classList.remove('paused');
         });
+        warmNext(cur);   // 预热下一条，避免切换时黑屏等待
       }
       tiles.forEach(function(t, k){
         var v = t.querySelector('.cvsrc'); if (!v) return;
@@ -1895,12 +1910,26 @@ body{background:#E9EAF2;font-family:"PingFang SC","Hiragino Sans GB","Microsoft 
         timer = setTimeout(function(){ next(); }, Math.max(2000, (sec + 0.4) * 1000));
       }
       function next(){ if (started) show(cur + 1); }
+      // 懒装载：data-src 只在需要时写入 src，避免开场一次性拉 4 条大视频
+      function ensureSrc(v){
+        if (!v) return v;
+        if (!v.getAttribute('src')) {
+          var d = v.getAttribute('data-src');
+          if (d) { v.setAttribute('preload','auto'); v.setAttribute('src', d); v.load(); }
+        }
+        return v;
+      }
+      function warmNext(i){                        // 播当前条的同时预热下一条，切换不卡
+        var t = tiles[(i + 1) % tiles.length];
+        if (t) ensureSrc(t.querySelector('.cvsrc'));
+      }
       function show(i){
         cur = (i + tiles.length) % tiles.length;   // 取模 → 第 3 条播完自动回到第 1 条
         tiles.forEach(function(t, k){
           t.classList.toggle('on', k === cur);
           var v = t.querySelector('.cvsrc'); if (!v) return;
           if (k === cur) {
+            ensureSrc(v);
             v.muted = false;                       // 依次播放，同一时刻只有一条出声
             try { v.currentTime = 0; } catch (e) {}
             var pr = v.play();
@@ -1914,6 +1943,7 @@ body{background:#E9EAF2;font-family:"PingFang SC","Hiragino Sans GB","Microsoft 
           }
           t.classList.remove('paused');
         });
+        warmNext(cur);   // 预热下一条，避免切换时黑屏等待
       }
       tiles.forEach(function(t, k){
         var v = t.querySelector('.cvsrc'); if (!v) return;
